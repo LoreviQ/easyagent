@@ -13,21 +13,57 @@ interface HeaderProps {
 }
 export function Header({ email, contentWidth }: HeaderProps) {
     const [cols, setCols] = useState(10);
+    const [buttonsCols, setButtonsCols] = useState(2);
+    const [searchCols, setSearchCols] = useState(6);
+    const [userCols, setUserCols] = useState(2);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            if (width < 640) { // mobile
+                setCols(3);
+                setButtonsCols(2);
+                setSearchCols(0);
+                setUserCols(1);
+            } else if (width < 768) { // tablet
+                setCols(8);
+                setButtonsCols(1);
+                setSearchCols(6);
+                setUserCols(1);
+            } else if (width < 1024) { // small desktop
+                setCols(8);
+                setButtonsCols(1);
+                setSearchCols(6);
+                setUserCols(1);
+            } else { // large desktop
+                setCols(12);
+                setButtonsCols(3);
+                setSearchCols(6);
+                setUserCols(3);
+            }
+        };
+
+        handleResize(); // Initial call
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <header className="bg-theme-bg border-b border-theme-bg-border sticky top-0 z-50">
-            <div className={`grid grid-cols-10 items-center h-16 px-8 mx-auto ${contentWidth}`}>
-                <HeaderButtons />
-                <SearchBar />
-                <UserInfo email={email} />
+            <div className={`grid items-center h-16 px-8 mx-auto ${contentWidth}`} style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+                <HeaderButtons cols={buttonsCols} />
+                <SearchBar cols={searchCols} />
+                <UserInfo email={email} cols={userCols} />
             </div>
         </header >
     );
 }
 
-function HeaderButtons() {
+function HeaderButtons({ cols }: { cols: number }) {
     const { preferences, updatePreference } = usePreferences();
     return (
-        <div className="flex items-center space-x-4 justify-start col-span-2">
+        <div className={`flex items-center space-x-4 justify-start`} style={{ gridColumn: `span ${cols}` }}>
             <button
                 onClick={() => updatePreference("narrowMode", !preferences.narrowMode)}
                 className="p-2 rounded-lg text-white hover:bg-theme-bg-card"
@@ -40,16 +76,17 @@ function HeaderButtons() {
             >
                 <Bars3Icon className="w-6 h-6" />
             </button>
-            <Link to="/" className="flex items-center">
+            {cols > 1 && <Link to="/" className="flex items-center">
                 <Logo />
-            </Link>
+            </Link>}
         </div>
     );
 }
-function SearchBar() {
+function SearchBar({ cols }: { cols: number }) {
+    if (cols < 1) return null;
     return (
-        <div className="flex justify-center col-span-6">
-            <div className="flex max-w-xl relative">
+        <div className="flex justify-center" style={{ gridColumn: `span ${cols}` }}>
+            <div className="flex w-full max-w-xl relative">
                 <input
                     type="search"
                     placeholder="Search..."
@@ -70,12 +107,12 @@ function SearchBar() {
     );
 }
 
-function UserInfo({ email = "none" }: { email?: string }) {
+function UserInfo({ email = "none", cols }: { email?: string, cols: number }) {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className="flex justify-end col-span-2 relative">
+        <div className="flex justify-end" style={{ gridColumn: `span ${cols}` }}>
             <div className="flex items-center gap-3">
-                <span className="text-white">{email}</span>
+                {cols > 1 && <span className="text-white">{email}</span>}
                 <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors">
                     <UserIcon className="text-white w-6 h-6" />
                 </button>
