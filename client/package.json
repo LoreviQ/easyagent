@@ -1,5 +1,5 @@
 {
-  "name": "easyagent-client",
+  "name": "client",
   "private": true,
   "sideEffects": false,
   "type": "module",
