@@ -1,0 +1,21 @@
+{
+  "name": "easyagent-monorepo",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "client:build": "pnpm --filter client run build",
+    "client:dev": "pnpm --filter client run dev",
+    "client:lint": "pnpm --filter client run lint",
+    "client:start": "pnpm --filter client run start",
+    "client:typecheck": "pnpm --filter client run typecheck"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+} 
