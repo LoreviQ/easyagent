@@ -1,6 +1,9 @@
-export function CoinIcon() {
+interface IconProps {
+    className?: string;
+}
+export function CoinIcon({ className }: IconProps) {
     return (
-        <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -10,10 +13,9 @@ export function CoinIcon() {
         </svg>
     );
 }
-
-export function BuildingIcon() {
+export function BuildingIcon({ className }: IconProps) {
     return (
-        <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -23,10 +25,9 @@ export function BuildingIcon() {
         </svg>
     );
 }
-
-export function VerifiedIcon() {
+export function VerifiedIcon({ className }: IconProps) {
     return (
-        <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`${className}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

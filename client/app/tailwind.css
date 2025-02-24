@@ -1,6 +1,41 @@
 @import 'tailwindcss';
 
 @theme {
+  --color-theme-bg: #0f1115;
+  --color-theme-bg-secondary: #1a1d22;
+  --color-theme-bg-card: #23272e;
+  --color-theme-bg-border: #2a2f38;
+  --color-theme-bg-hover: #2e333d;
+
+  --color-theme-primary: #ff3366;
+  --color-theme-primary-hover: #ff4d7f;
+  --color-theme-primary-light: #ffe6ec;
+  --color-theme-primary-dark: #cc2952;
+
+  --color-theme-accent: #9f2bff;
+  --color-theme-accent-hover: #b355ff;
+  --color-theme-accent-light: #f2e6ff;
+  --color-theme-accent-dark: #7f22cc;
+
+  --color-theme-highlight: #ff9233;
+  --color-theme-highlight-hover: #ffa64d;
+  --color-theme-highlight-light: #fff1e6;
+  --color-theme-highlight-dark: #cc7529;
+
+  --color-theme-text: #f8f9fa;
+  --color-theme-text-secondary: #ced3d8;
+  --color-theme-text-muted: #9ba1a8;
+  --color-theme-text-accent: #ff3366;
+
+  --color-theme-success: #00cc88;
+  --color-theme-success-light: #e6fff5;
+
+  --color-theme-error: #ff3366;
+  --color-theme-error-light: #ffe6ec;
+
+  --color-theme-warning: #ff9233;
+  --color-theme-warning-light: #fff1e6;
+
   --font-sans:
     Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji,
     Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
@@ -15,6 +50,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
