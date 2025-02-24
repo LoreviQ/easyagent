@@ -42,3 +42,23 @@ export function FeatureCard({ header, description, icon, iconBgColor = "bg-theme
         </div>
     );
 }
+
+export function HeadingBreak({ label, colour = undefined }: { label: string; colour?: string }) {
+    switch (colour) {
+        case "red":
+            return (
+                <div className="flex items-center justify-center gap-4">
+                    <div className="h-[1px] flex-1 bg-red-500/30"></div>
+                    <h2 className="text-lg font-semibold text-red-500 whitespace-nowrap">{label}</h2>
+                    <div className="h-[1px] flex-1 bg-red-500/30"></div>
+                </div>
+            );
+    }
+    return (
+        <div className="flex items-center justify-center gap-4">
+            <div className="h-[1px] flex-1 bg-theme-secondary/30"></div>
+            <h2 className="text-lg font-semibold text-theme-secondary whitespace-nowrap">{label}</h2>
+            <div className="h-[1px] flex-1 bg-theme-secondary/30"></div>
+        </div>
+    );
+}

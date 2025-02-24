@@ -55,7 +55,7 @@ function ProviderLoginButton({ provider }: ProviderLoginButtonProps) {
                 onMouseEnter={() => setBgColor(provider.hoverColour)}
                 onMouseLeave={() => setBgColor(provider.colour)}
             >
-                {provider.icon && <provider.icon />}
+                {provider.icon && <provider.icon className="w-6 h-6" />}
                 <span>Continue with {provider.name}</span>
             </button>
         </Form>
