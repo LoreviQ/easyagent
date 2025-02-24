@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+        <div className="min-h-screen bg-linear-to-b from-gray-900 to-gray-800 text-white">
             <Hero />
             <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
                 <FeatureCard

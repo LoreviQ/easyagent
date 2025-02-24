@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 export function Hero({ }) {
     return (
         <div className="container mx-auto px-4 py-20 max-w-4xl text-center space-y-10">
-            <h1 className="text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 pb-2">
+            <h1 className="text-8xl font-bold bg-clip-text text-transparent bg-linear-to-r from-blue-400 to-purple-500 pb-2">
                 EasyAgent
             </h1>
             <p className="text-xl text-gray-300 mb-12">
