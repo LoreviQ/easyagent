@@ -1,4 +1,4 @@
-import { GithubIcon } from "~/components/icons";
+import { GithubIcon, GoogleIcon } from "~/components/icons";
 import type { FC } from "react";
 
 export interface ProviderDetails {
@@ -18,4 +18,12 @@ export const PROVIDERS: ProviderDetails[] = [
         hoverColour: "#1B1F23",
         text: "#FFFFFF"
     },
+    {
+        id: "google",
+        name: "Google",
+        icon: GoogleIcon,
+        colour: "#ffffff",
+        hoverColour: "#e9e9e9",
+        text: "#000000"
+    }
 ];
