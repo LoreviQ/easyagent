@@ -7,7 +7,7 @@ interface ModelProvider {
 }
 
 // Define the response type for the form submission
-interface FormActionResponse {
+export interface FormActionResponse {
     success?: boolean;
     error?: string;
     data?: any;
