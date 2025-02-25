@@ -1,13 +1,14 @@
 import { redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigation } from "@remix-run/react";
 import { Outlet } from "@remix-run/react";
 import type { User } from "@supabase/supabase-js";
 
 import type { PrefsCookie } from "~/utils/cookies";
 import { prefsCookie, DEFAULT_PREFS } from "~/utils/cookies";
+import { getSupabaseAuth } from "~/utils/supabase";
 import { Header } from "~/components/header";
 import { Sidebar } from "~/components/sidebar";
-import { getSupabaseAuth } from "~/utils/supabase";
+import { AnimatedLoadingIcon } from "~/components/icons";
 import { PreferencesProvider, usePreferences } from "~/contexts/preferences";
 
 export async function loader({ request }: { request: Request }) {
@@ -41,6 +42,8 @@ interface LayoutProps {
 }
 function Layout({ userData }: LayoutProps) {
     const { preferences } = usePreferences();
+    const navigation = useNavigation();
+
     const widthClass = preferences.narrowMode ? "max-w-7xl" : "";
     return (
         <div className={`min-h-screen bg-gradient-to-b from-theme-bg to-theme-bg-secondary text-white `}>
@@ -49,7 +52,7 @@ function Layout({ userData }: LayoutProps) {
                 <div className="flex">
                     <Sidebar isOpen={preferences.showSidebar} />
                     <main className="flex-1 p-6">
-                        <Outlet context={userData} />
+                        {navigation.state === "loading" ? <AnimatedLoadingIcon location={navigation.location?.pathname} /> : <Outlet context={userData} />}
                     </main>
                 </div>
             </div>

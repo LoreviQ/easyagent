@@ -185,3 +185,23 @@ export function UserIcon({ className = "" }: IconProps) {
     );
 }
 
+interface AnimatedLoadingIconProps extends IconProps {
+    location?: string;
+}
+export function AnimatedLoadingIcon({ className = "", location = "" }: AnimatedLoadingIconProps) {
+    const friendlyNames: Record<string, string> = {
+        "": "page",
+        "/settings": "Settings",
+        "/dashboard": "Dashboard",
+        "/agent": "Agent",
+    };
+
+    return (
+        <div className={`flex items-center justify-center min-h-[300px] ${className}`}>
+            <div className="text-center">
+                <div className="inline-block animate-spin h-8 w-8 border-4 border-theme-primary border-t-transparent rounded-full mb-4"></div>
+                <p className="text-gray-400">Loading {friendlyNames[location] || "page"}...</p>
+            </div>
+        </div>
+    );
+}
