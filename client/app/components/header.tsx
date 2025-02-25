@@ -111,7 +111,7 @@ entColor" viewBox="0 0 24 24">
 function UserInfo({ email = "none", cols }: { email?: string, cols: number }) {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className="flex justify-end" style={{ gridColumn: `span ${cols}` }}>
+        <div className="flex justify-end relative" style={{ gridColumn: `span ${cols}` }}>
             <div className="flex items-center gap-3">
                 {cols > 1 && <span className="text-white">{email}</span>}
                 <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors">
