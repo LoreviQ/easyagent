@@ -6,6 +6,13 @@ interface ModelProvider {
     name: string;
 }
 
+// Define the response type for the form submission
+interface FormActionResponse {
+    success?: boolean;
+    error?: string;
+    data?: any;
+}
+
 export enum ModelConfigFormType {
     CREATE = "create",
     EDIT = "edit",
@@ -32,7 +39,7 @@ export function ModelConfigForm({
     onCancel,
     onSuccess
 }: ModelConfigFormProps) {
-    const formFetcher = useFetcher();
+    const formFetcher = useFetcher<FormActionResponse>();
     const providersFetcher = useFetcher<{ modelProviders: ModelProvider[] }>();
     const isSubmitting = formFetcher.state === "submitting";
     const isEdit = !!initialValues?.id;
