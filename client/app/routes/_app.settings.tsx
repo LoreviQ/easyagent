@@ -8,6 +8,7 @@ import { getSupabaseAuth } from "~/utils/supabase";
 import { SubmitButton } from "~/components/buttons";
 import { HeadingBreak, ContentCard } from "~/components/cards";
 import { PROVIDERS } from "~/types/providers";
+import { ModelConfigFormType, ModelConfigForm } from "~/components/forms";
 
 export async function loader({ request }: { request: Request }) {
     const { supabase } = getSupabaseAuth(request);
@@ -101,9 +102,8 @@ export default function Settings() {
 // Displays the user's model configurations
 function ModelConfigurations() {
     const { modelConfigs, modelProviders } = useLoaderData<typeof loader>();
-    const [showCreateForm, setShowCreateForm] = useState(false);
-    const fetcher = useFetcher();
-    const isSubmitting = fetcher.state === "submitting";
+    const [modelConfigFormType, setModelConfigFormType] = useState<ModelConfigFormType>(ModelConfigFormType.HIDDEN);
+    const [editingConfig, setEditingConfig] = useState<any>(null);
 
     return (
         <ContentCard title="Model Configurations">
@@ -115,10 +115,18 @@ function ModelConfigurations() {
                             <div key={config.id} className="flex items-center justify-between py-3 px-4 bg-theme-surface-secondary rounded-lg">
                                 <div>
                                     <h3 className="font-medium text-lg">{config.name || 'Unnamed Configuration'}</h3>
-                                    <p className="text-sm text-gray-300">{modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}</p>
+                                    <p className="text-sm text-gray-300">
+                                        {modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}
+                                    </p>
                                 </div>
                                 <div className="flex space-x-2">
-                                    <button className="px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover rounded text-sm">
+                                    <button
+                                        onClick={() => {
+                                            setEditingConfig(config);
+                                            setModelConfigFormType(ModelConfigFormType.EDIT);
+                                        }}
+                                        className="px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover rounded text-sm"
+                                    >
                                         Edit
                                     </button>
                                     <button className="px-3 py-1 bg-theme-error hover:bg-theme-error-hover rounded text-sm">
@@ -135,92 +143,49 @@ function ModelConfigurations() {
                 </div>
             )}
 
-            {/* Form for creating new configuration */}
-            {showCreateForm ? (
-                <div className="mt-4 p-4 bg-theme-surface-secondary rounded-lg">
-                    <h3 className="font-medium text-lg mb-4">Create New Configuration</h3>
-                    <fetcher.Form method="post" action="/api/create-model-config">
-                        <div className="space-y-4">
-                            <div>
-                                <label htmlFor="name" className="block text-sm font-medium mb-1">
-                                    Configuration Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    required
-                                    className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                                    placeholder="My Configuration"
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="model_provider_id" className="block text-sm font-medium mb-1">
-                                    Model Provider
-                                </label>
-                                <select
-                                    id="model_provider_id"
-                                    name="model_provider_id"
-                                    required
-                                    className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                                >
-                                    <option value="">Select a provider</option>
-                                    {modelProviders.map(provider => (
-                                        <option key={provider.id} value={provider.id}>
-                                            {provider.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor="api_key" className="block text-sm font-medium mb-1">
-                                    API Key
-                                </label>
-                                <input
-                                    type="password"
-                                    id="api_key"
-                                    name="api_key"
-                                    required
-                                    className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                                    placeholder="sk-..."
-                                />
-                            </div>
-
-                            <div className="flex justify-end space-x-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCreateForm(false)}
-                                    className="px-4 py-2 bg-theme-surface-secondary hover:bg-theme-surface-tertiary rounded"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover rounded flex items-center"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            Saving...
-                                        </>
-                                    ) : (
-                                        "Save Configuration"
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </fetcher.Form>
+            {/* Edit form */}
+            {modelConfigFormType === ModelConfigFormType.EDIT && (
+                <div className="mt-4">
+                    <ModelConfigForm
+                        actionRoute="/api/update-model-config"
+                        modelProviders={modelProviders}
+                        initialValues={{
+                            id: editingConfig.id,
+                            name: editingConfig.name,
+                            model_provider_id: editingConfig.model_provider_id,
+                            api_key: "" // We don't send the actual API key for security
+                        }}
+                        onCancel={() => {
+                            setEditingConfig(null);
+                            setModelConfigFormType(ModelConfigFormType.HIDDEN);
+                        }}
+                        onSuccess={() => {
+                            setEditingConfig(null);
+                            setModelConfigFormType(ModelConfigFormType.HIDDEN);
+                        }}
+                    />
                 </div>
-            ) : (
+            )}
+
+            {/* Create form */}
+            {modelConfigFormType === ModelConfigFormType.CREATE && (
+                <div className="mt-4">
+                    <ModelConfigForm
+                        actionRoute="/api/create-model-config"
+                        modelProviders={modelProviders}
+                        onCancel={() => setModelConfigFormType(ModelConfigFormType.HIDDEN)}
+                        onSuccess={() => {
+                            setModelConfigFormType(ModelConfigFormType.HIDDEN);
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Create button */}
+            {modelConfigFormType === ModelConfigFormType.HIDDEN && (
                 <div className="mt-4 text-center">
                     <button
-                        onClick={() => setShowCreateForm(true)}
+                        onClick={() => setModelConfigFormType(ModelConfigFormType.CREATE)}
                         className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover rounded"
                     >
                         Create New Configuration
