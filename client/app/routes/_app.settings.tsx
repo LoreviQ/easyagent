@@ -1,14 +1,15 @@
 import { useOutletContext, useActionData, useLoaderData } from "@remix-run/react";
 import type { User, Provider, UserIdentity } from "@supabase/supabase-js";
 import { type FC, useEffect, useState } from "react";
-import { Form, useFetcher } from "@remix-run/react";
+import { Form } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 
 import { getSupabaseAuth } from "~/utils/supabase";
 import { SubmitButton } from "~/components/buttons";
 import { HeadingBreak, ContentCard } from "~/components/cards";
 import { PROVIDERS } from "~/types/providers";
-import { ModelConfigFormType, ModelConfigForm } from "~/components/forms";
+import { ModelConfigForm } from "~/components/forms";
+import { ActionButton } from "~/components/buttons";
 
 export async function loader({ request }: { request: Request }) {
     const { supabase } = getSupabaseAuth(request);
@@ -102,8 +103,14 @@ export default function Settings() {
 // Displays the user's model configurations
 function ModelConfigurations() {
     const { modelConfigs, modelProviders } = useLoaderData<typeof loader>();
-    const [modelConfigFormType, setModelConfigFormType] = useState<ModelConfigFormType>(ModelConfigFormType.HIDDEN);
-    const [editingConfig, setEditingConfig] = useState<any>(null);
+    const [formHidden, setFormHidden] = useState(true);
+    const [initialValues, setInitialValues] = useState<any>(null);
+
+    // Helper function to reset form state
+    const hideForm = () => {
+        setInitialValues(null);
+        setFormHidden(true);
+    };
 
     return (
         <ContentCard title="Model Configurations">
@@ -120,18 +127,19 @@ function ModelConfigurations() {
                                     </p>
                                 </div>
                                 <div className="flex space-x-2">
-                                    <button
+                                    <ActionButton
+                                        label="Edit"
+                                        className="px-3 py-1 text-sm"
                                         onClick={() => {
-                                            setEditingConfig(config);
-                                            setModelConfigFormType(ModelConfigFormType.EDIT);
+                                            setInitialValues(config);
+                                            setFormHidden(false);
                                         }}
-                                        className="px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover rounded text-sm"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button className="px-3 py-1 bg-theme-error hover:bg-theme-error-hover rounded text-sm">
-                                        Delete
-                                    </button>
+                                    />
+                                    <ActionButton
+                                        label="Delete"
+                                        className="px-3 py-1 text-sm"
+                                        onClick={() => { }}
+                                    />
                                 </div>
                             </div>
                         ))}
@@ -144,52 +152,18 @@ function ModelConfigurations() {
             )}
 
             {/* Edit form */}
-            {modelConfigFormType === ModelConfigFormType.EDIT && (
-                <div className="mt-4">
-                    <ModelConfigForm
-                        actionRoute="/api/update-model-config"
-                        modelProviders={modelProviders}
-                        initialValues={{
-                            id: editingConfig.id,
-                            name: editingConfig.name,
-                            model_provider_id: editingConfig.model_provider_id,
-                            api_key: "" // We don't send the actual API key for security
-                        }}
-                        onCancel={() => {
-                            setEditingConfig(null);
-                            setModelConfigFormType(ModelConfigFormType.HIDDEN);
-                        }}
-                        onSuccess={() => {
-                            setEditingConfig(null);
-                            setModelConfigFormType(ModelConfigFormType.HIDDEN);
-                        }}
-                    />
+            {formHidden ? (
+                <div className="text-center">
+                    <ActionButton label="Create New Configuration" onClick={() => setFormHidden(false)} />
                 </div>
-            )}
-
-            {/* Create form */}
-            {modelConfigFormType === ModelConfigFormType.CREATE && (
-                <div className="mt-4">
+            ) : (
+                <div className="">
                     <ModelConfigForm
-                        actionRoute="/api/create-model-config"
                         modelProviders={modelProviders}
-                        onCancel={() => setModelConfigFormType(ModelConfigFormType.HIDDEN)}
-                        onSuccess={() => {
-                            setModelConfigFormType(ModelConfigFormType.HIDDEN);
-                        }}
+                        initialValues={initialValues}
+                        onCancel={hideForm}
+                        onSuccess={hideForm}
                     />
-                </div>
-            )}
-
-            {/* Create button */}
-            {modelConfigFormType === ModelConfigFormType.HIDDEN && (
-                <div className="mt-4 text-center">
-                    <button
-                        onClick={() => setModelConfigFormType(ModelConfigFormType.CREATE)}
-                        className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover rounded"
-                    >
-                        Create New Configuration
-                    </button>
                 </div>
             )}
         </ContentCard>

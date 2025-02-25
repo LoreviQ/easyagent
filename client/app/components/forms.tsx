@@ -13,14 +13,7 @@ interface FormActionResponse {
     data?: any;
 }
 
-export enum ModelConfigFormType {
-    CREATE = "create",
-    EDIT = "edit",
-    HIDDEN = "hidden",
-}
-
 interface ModelConfigFormProps {
-    actionRoute: string;
     initialValues?: {
         id?: string;
         name: string;
@@ -33,7 +26,6 @@ interface ModelConfigFormProps {
 }
 
 export function ModelConfigForm({
-    actionRoute,
     initialValues,
     modelProviders: providedModelProviders,
     onCancel,
@@ -43,6 +35,12 @@ export function ModelConfigForm({
     const providersFetcher = useFetcher<{ modelProviders: ModelProvider[] }>();
     const isSubmitting = formFetcher.state === "submitting";
     const isEdit = !!initialValues?.id;
+
+    // Determine the action route based on whether we're editing or creating
+    const actionRoute = isEdit
+        ? "/api/update-model-config"
+        : "/api/create-model-config";
+
     const [apiKeyChanged, setApiKeyChanged] = useState(false);
 
     // Fetch model providers only if not provided
