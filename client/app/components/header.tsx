@@ -93,7 +93,8 @@ function SearchBar({ cols }: { cols: number }) {
                     className="w-full bg-theme-bg-card border border-gray-700 rounded-lg py-2 px-4 text-gray-300 focus:outline-none focus:border-theme-secondary"
                 />
                 <button className="absolute right-3 top-2.5 text-white hover:text-gray-300">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" fill="none" stroke="curr
+entColor" viewBox="0 0 24 24">
                         <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
