@@ -14,7 +14,7 @@ export async function action({ request }: { request: Request }) {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider as Provider,
             options: {
-                redirectTo: `${process.env.APP_URL}/auth-callback`,
+                redirectTo: `${process.env.APP_URL}/api/auth-callback`,
             },
         });
         if (error) throw error;

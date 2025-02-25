@@ -65,7 +65,7 @@ export async function action({ request }: { request: Request }) {
             const { data, error } = await supabase.auth.linkIdentity({
                 provider: provider as Provider,
                 options: {
-                    redirectTo: `${process.env.APP_URL}/auth-callback?next=/settings`,
+                    redirectTo: `${process.env.APP_URL}/api/auth-callback?next=/settings`,
                 },
             });
             if (error) throw error;
@@ -140,7 +140,7 @@ function ModelConfigurations() {
             {showCreateForm ? (
                 <div className="mt-4 p-4 bg-theme-surface-secondary rounded-lg">
                     <h3 className="font-medium text-lg mb-4">Create New Configuration</h3>
-                    <fetcher.Form method="post" action="/create-model-config">
+                    <fetcher.Form method="post" action="/api/create-model-config">
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium mb-1">

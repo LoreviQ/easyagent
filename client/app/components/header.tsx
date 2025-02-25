@@ -126,7 +126,7 @@ function UserInfo({ email = "none", cols }: { email?: string, cols: number }) {
 function Dropdown() {
     return (
         <div className="absolute right-0 top-full mt-3 w-48 rounded-lg bg-theme-bg-card border border-theme-bg-border shadow-lg py-1">
-            <Form method="post" action="/logout">
+            <Form method="post" action="/api/logout">
                 <button className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition-colors">
                     Logout
                 </button>

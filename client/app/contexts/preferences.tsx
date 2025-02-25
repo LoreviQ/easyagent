@@ -23,7 +23,7 @@ export function PreferencesProvider({ initial, children }: { initial: PrefsCooki
         formData.append(key, String(value));
         fetcher.submit(formData, {
             method: "post",
-            action: "/updatePreferences",
+            action: "/api/update-preferences",
         });
     };
 
