@@ -29,12 +29,15 @@
 
   --color-theme-success: #00cc88;
   --color-theme-success-light: #e6fff5;
+  --color-theme-success-hover: #00cc88;
 
   --color-theme-error: #ff3366;
   --color-theme-error-light: #ffe6ec;
+  --color-theme-error-hover: #ff4d7f;
 
   --color-theme-warning: #ff9233;
   --color-theme-warning-light: #fff1e6;
+  --color-theme-warning-hover: #ffa64d;
 
   --font-sans:
     Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji,

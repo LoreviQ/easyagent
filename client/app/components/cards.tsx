@@ -62,3 +62,18 @@ export function HeadingBreak({ label, colour = undefined }: { label: string; col
         </div>
     );
 }
+
+interface ContentCardProps {
+    title: string;
+    children: React.ReactNode;
+    className?: string;
+}
+
+export function ContentCard({ title, children, className = "" }: ContentCardProps) {
+    return (
+        <div className={`bg-theme-bg-card/70 rounded-lg p-6 ${className}`}>
+            <h1 className="text-xl font-semibold mb-4">{title}</h1>
+            {children}
+        </div>
+    );
+}
