@@ -10,6 +10,7 @@ import { HeadingBreak, ContentCard } from "~/components/cards";
 import { PROVIDERS } from "~/types/providers";
 import { ModelConfigForm, FormActionResponse } from "~/components/forms";
 import { ActionButton } from "~/components/buttons";
+import { useConfirmationOverlay } from "~/components/overlays";
 
 export async function loader({ request }: { request: Request }) {
     const { supabase } = getSupabaseAuth(request);
@@ -105,7 +106,6 @@ function ModelConfigurations() {
     const { modelConfigs, modelProviders } = useLoaderData<typeof loader>();
     const [formHidden, setFormHidden] = useState(true);
     const [initialValues, setInitialValues] = useState<any>(null);
-    const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
     const deleteFetcher = useFetcher<FormActionResponse>();
 
     // Helper function to reset form state
@@ -114,28 +114,33 @@ function ModelConfigurations() {
         setFormHidden(true);
     };
 
-    // Handle delete confirmation
-    const handleDeleteClick = (configId: string) => {
-        setConfirmDelete(configId);
-    };
-
     // Execute delete when confirmed
     const executeDelete = () => {
-        if (!confirmDelete) return;
+        if (!deleteConfirmation.confirmationData) return;
 
         deleteFetcher.submit(
-            { id: confirmDelete },
+            { id: deleteConfirmation.confirmationData },
             { method: "post", action: "/api/delete-model-config" }
         );
     };
 
+    // Custom overlay hook
+    const deleteConfirmation = useConfirmationOverlay({
+        heading: "Confirm Delete",
+        subheading: "Are you sure you want to delete this model configuration? This action cannot be undone.",
+        continueButtonLabel: "Delete",
+        onContinue: executeDelete,
+        isLoading: deleteFetcher.state === "submitting",
+        continueButtonClassName: "bg-theme-error hover:bg-theme-error-hover"
+    });
+
     // Clear confirmation when delete is complete
     useEffect(() => {
         if (deleteFetcher.data?.success) {
-            setConfirmDelete(null);
+            deleteConfirmation.hideConfirmation();
         } else if (deleteFetcher.data?.error) {
             alert(`Error: ${deleteFetcher.data.error}`);
-            setConfirmDelete(null);
+            deleteConfirmation.hideConfirmation();
         }
     }, [deleteFetcher.data]);
 
@@ -165,7 +170,7 @@ function ModelConfigurations() {
                                     <ActionButton
                                         label="Delete"
                                         className="px-3 py-1 text-sm bg-theme-error hover:bg-theme-error-hover"
-                                        onClick={() => handleDeleteClick(config.id)}
+                                        onClick={() => deleteConfirmation.showConfirmation(config.id)}
                                     />
                                 </div>
                             </div>
@@ -193,44 +198,7 @@ function ModelConfigurations() {
                     />
                 </div>
             )}
-
-            {/* Delete confirmation dialog */}
-            {confirmDelete && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-theme-surface p-6 rounded-lg max-w-md w-full">
-                        <h3 className="text-xl font-bold mb-4">Confirm Delete</h3>
-                        <p className="mb-6">
-                            Are you sure you want to delete this model configuration?
-                            This action cannot be undone.
-                        </p>
-                        <div className="flex justify-end space-x-3">
-                            <button
-                                onClick={() => setConfirmDelete(null)}
-                                className="px-4 py-2 bg-theme-surface-secondary hover:bg-theme-surface-tertiary rounded"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={executeDelete}
-                                disabled={deleteFetcher.state === "submitting"}
-                                className="px-4 py-2 bg-theme-error hover:bg-theme-error-hover rounded flex items-center"
-                            >
-                                {deleteFetcher.state === "submitting" ? (
-                                    <>
-                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Deleting...
-                                    </>
-                                ) : (
-                                    "Delete"
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {deleteConfirmation.ConfirmationOverlayComponent}
         </ContentCard>
     );
 }
