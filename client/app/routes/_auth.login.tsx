@@ -10,12 +10,16 @@ export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
     const provider = formData.get("provider");
     const { supabase, headers } = getSupabaseAuth(request);
-    console.log(`${process.env.APP_URL}/api/auth-callback`)
+
+    const url = new URL(request.url);
+    const redirectUrl = `${url.origin}/api/auth-callback`;
+    console.log(redirectUrl);
+
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider as Provider,
             options: {
-                redirectTo: `${process.env.APP_URL}/api/auth-callback`,
+                redirectTo: redirectUrl,
             },
         });
         if (error) throw error;
