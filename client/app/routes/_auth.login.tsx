@@ -7,6 +7,7 @@ import { getSupabaseAuth } from "~/utils/supabase";
 import { type ProviderDetails, PROVIDERS } from "~/types/providers";
 
 export async function action({ request }: { request: Request }) {
+    console.log(process.env.APP_URL);
     const formData = await request.formData();
     const provider = formData.get("provider");
     const { supabase, headers } = getSupabaseAuth(request);
