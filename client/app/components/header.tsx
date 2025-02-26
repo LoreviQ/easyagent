@@ -14,6 +14,7 @@ export function Header({ email, contentWidth }: HeaderProps) {
     const [buttonsCols, setButtonsCols] = useState(2);
     const [searchCols, setSearchCols] = useState(6);
     const [userCols, setUserCols] = useState(2);
+    const [showChevron, setShowChevron] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -39,6 +40,11 @@ export function Header({ email, contentWidth }: HeaderProps) {
                 setSearchCols(6);
                 setUserCols(3);
             }
+            if (width >= 1280) {
+                setShowChevron(true);
+            } else {
+                setShowChevron(false);
+            }
         };
 
         handleResize(); // Initial call
@@ -50,7 +56,7 @@ export function Header({ email, contentWidth }: HeaderProps) {
     return (
         <header className="bg-theme-bg border-b border-theme-bg-border sticky top-0 z-50">
             <div className={`grid items-center h-16 px-8 mx-auto ${contentWidth}`} style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
-                <HeaderButtons cols={buttonsCols} />
+                <HeaderButtons cols={buttonsCols} showChevron={showChevron} />
                 <SearchBar cols={searchCols} />
                 <UserInfo email={email} cols={userCols} />
             </div>
@@ -58,16 +64,16 @@ export function Header({ email, contentWidth }: HeaderProps) {
     );
 }
 
-function HeaderButtons({ cols }: { cols: number }) {
+function HeaderButtons({ cols, showChevron }: { cols: number, showChevron: boolean }) {
     const { preferences, updatePreference } = usePreferences();
     return (
         <div className={`flex items-center space-x-4 justify-start`} style={{ gridColumn: `span ${cols}` }}>
-            <button
+            {showChevron && <button
                 onClick={() => updatePreference("narrowMode", !preferences.narrowMode)}
                 className="p-2 rounded-lg text-white hover:bg-theme-bg-card"
             >
                 {preferences.narrowMode ? <ChevronLeftIcon className="w-6 h-6" /> : <ChevronRightIcon className="w-6 h-6" />}
-            </button>
+            </button>}
             <button
                 onClick={() => updatePreference("showSidebar", !preferences.showSidebar)}
                 className="p-2 rounded-lg text-white hover:bg-theme-bg-card"
