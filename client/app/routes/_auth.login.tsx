@@ -10,6 +10,7 @@ export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
     const provider = formData.get("provider");
     const { supabase, headers } = getSupabaseAuth(request);
+    console.log(`${process.env.APP_URL}/api/auth-callback`)
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider as Provider,
