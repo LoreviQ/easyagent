@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import { usePreferences } from "~/contexts/preferences";
 
 interface NavButtonProps {
     path: string;
@@ -8,6 +9,7 @@ interface NavButtonProps {
     isOpen?: boolean;
 }
 export function NavButton({ path, label, icon, isActive, isOpen }: NavButtonProps) {
+    const { updatePreference } = usePreferences();
     return (
         <Link
             to={path}
@@ -15,6 +17,9 @@ export function NavButton({ path, label, icon, isActive, isOpen }: NavButtonProp
                 ? "bg-theme-primary/10 text-theme-secondary-hover"
                 : "text-theme-secondary hover:bg-theme-primary-hover/10 hover:text-theme-secondary-hover"
                 }`}
+            onClick={() => {
+                window.innerWidth < 640 ? updatePreference("showSidebar", !isOpen) : null;
+            }}
         >
             <div className="flex-shrink-0">{icon}</div>
             {isOpen && <span className="font-medium transition-opacity duration-300">{label}</span>}

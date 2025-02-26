@@ -3,13 +3,11 @@ import { useLocation } from "@remix-run/react";
 
 import { BlockIcon, BuildingIcon, CogIcon } from "./icons";
 import { NavButton } from "./buttons";
+import { usePreferences } from "~/contexts/preferences";
 
-interface SidebarProps {
-    isOpen?: boolean;
-}
-
-export function Sidebar({ isOpen = true }: SidebarProps) {
+export function Sidebar() {
     const [mobile, setMobile] = useState(false);
+    const { preferences } = usePreferences();
 
     useEffect(() => {
         const handleResize = () => {
@@ -23,27 +21,27 @@ export function Sidebar({ isOpen = true }: SidebarProps) {
         return (
             <aside
                 className={`
-                    ${isOpen ? "translate-x-0" : "-translate-x-full"}
+                    ${preferences.showSidebar ? "translate-x-0" : "-translate-x-full"}
                     fixed w-full h-full
                     bg-theme-bg z-50
                     border-r border-theme-bg-border 
                     transition-all duration-300 ease-in-out
                 `}
             >
-                {sidebarContent(isOpen)}
+                {sidebarContent(preferences.showSidebar ?? true)}
             </aside>
         );
     }
     return (
         <aside
             className={`
-                ${isOpen ? "w-64" : "w-20"}
+                ${preferences.showSidebar ? "w-64" : "w-20"}
                 h-[calc(100vh-65px)]
                 border-r border-theme-bg-border 
                 transition-all duration-300 ease-in-out
             `}
         >
-            {sidebarContent(isOpen)}
+            {sidebarContent(preferences.showSidebar ?? true)}
         </aside>
     );
 }

@@ -47,10 +47,10 @@ function Layout({ userData }: LayoutProps) {
     const widthClass = preferences.narrowMode ? "max-w-7xl" : "";
     return (
         <div className={`min-h-screen bg-gradient-to-b from-theme-bg to-theme-bg-secondary text-white `}>
-            <Header preferences={preferences} email={userData.email} contentWidth={widthClass} />
+            <Header email={userData.email} contentWidth={widthClass} />
             <div className={`mx-auto ${widthClass}`}>
                 <div className="flex">
-                    <Sidebar isOpen={preferences.showSidebar} />
+                    <Sidebar />
                     <main className="flex-1 p-6">
                         {navigation.state === "loading" ? <AnimatedLoadingIcon location={navigation.location?.pathname} /> : <Outlet context={userData} />}
                     </main>

@@ -3,11 +3,9 @@ import { Link } from "@remix-run/react";
 import { Form } from "@remix-run/react";
 
 import { Logo, Bars3Icon, ChevronLeftIcon, ChevronRightIcon, UserIcon } from "~/components/icons";
-import { PrefsCookie } from "~/utils/cookies";
 import { usePreferences } from "~/contexts/preferences";
 
 interface HeaderProps {
-    preferences: PrefsCookie;
     email?: string;
     contentWidth: string;
 }
