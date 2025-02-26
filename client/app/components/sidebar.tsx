@@ -37,7 +37,8 @@ export function Sidebar({ isOpen = true }: SidebarProps) {
     return (
         <aside
             className={`
-                ${isOpen ? "w-64" : "w-20"} min-h-screen 
+                ${isOpen ? "w-64" : "w-20"}
+                h-[calc(100vh-65px)]
                 border-r border-theme-bg-border 
                 transition-all duration-300 ease-in-out
             `}

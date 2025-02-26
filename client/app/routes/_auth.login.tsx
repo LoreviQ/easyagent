@@ -13,7 +13,6 @@ export async function action({ request }: { request: Request }) {
 
     const url = new URL(request.url);
     const redirectUrl = `${url.origin}/api/auth-callback`;
-    console.log(redirectUrl);
 
     try {
         const { data, error } = await supabase.auth.signInWithOAuth({
