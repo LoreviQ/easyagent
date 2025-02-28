@@ -1,6 +1,6 @@
-import { useOutletContext, useActionData, useLoaderData, useFetcher } from "@remix-run/react";
+import { useOutletContext, useActionData } from "@remix-run/react";
 import type { User, Provider, UserIdentity } from "@supabase/supabase-js";
-import { type FC, useEffect, useState } from "react";
+import { type FC, useEffect } from "react";
 import { Form } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 
@@ -8,44 +8,8 @@ import { getSupabaseAuth } from "~/utils/supabase";
 import { SubmitButton } from "~/components/buttons";
 import { HeadingBreak, ContentCard } from "~/components/cards";
 import { PROVIDERS } from "~/types/providers";
-import { ModelConfigForm, FormActionResponse } from "~/components/forms";
-import { ActionButton } from "~/components/buttons";
-import { useConfirmationOverlay } from "~/components/overlays";
-import type { UserModelConfig, ModelProvider } from "~/types/database";
+import { ModelConfigurations } from "~/components/lists";
 
-export async function loader({ request }: { request: Request }) {
-    const { supabase } = getSupabaseAuth(request);
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-        console.error("Error fetching user:", userError);
-        throw redirect("/login");
-    }
-
-    // Fetch user model configurations
-    const { data: modelConfigs, error: configsError } = await supabase
-        .from('user_model_configs')
-        .select('*')
-        .eq('owner_id', user.id);
-
-    if (configsError) {
-        console.error("Error fetching model configurations:", configsError);
-    }
-
-    // Fetch model providers
-    const { data: modelProviders, error: providersError } = await supabase
-        .from('model_providers')
-        .select('id, name');
-
-    if (providersError) {
-        console.error("Error fetching model providers:", providersError);
-    }
-
-    return {
-        modelConfigs: modelConfigs as UserModelConfig[] || [],
-        modelProviders: modelProviders as ModelProvider[] || []
-    };
-}
 
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
@@ -101,108 +65,6 @@ export default function Settings() {
                 <Accounts />
             </ContentCard>
         </div>
-    );
-}
-
-// Displays the user's model configurations
-function ModelConfigurations() {
-    const { modelConfigs, modelProviders } = useLoaderData<typeof loader>();
-    const [formHidden, setFormHidden] = useState(true);
-    const [initialValues, setInitialValues] = useState<UserModelConfig | null>(null);
-    const deleteFetcher = useFetcher<FormActionResponse>();
-
-    // Helper function to reset form state
-    const hideForm = () => {
-        setInitialValues(null);
-        setFormHidden(true);
-    };
-
-    // Execute delete when confirmed
-    const executeDelete = () => {
-        if (!deleteConfirmation.confirmationData) return;
-
-        deleteFetcher.submit(
-            { id: deleteConfirmation.confirmationData },
-            { method: "post", action: "/api/delete-model-config" }
-        );
-    };
-
-    // Custom overlay hook
-    const deleteConfirmation = useConfirmationOverlay({
-        heading: "Confirm Delete",
-        subheading: "Are you sure you want to delete this model configuration? This action cannot be undone.",
-        continueButtonLabel: "Delete",
-        onContinue: executeDelete,
-        isLoading: deleteFetcher.state === "submitting",
-        continueButtonClassName: "bg-theme-error hover:bg-theme-error-hover"
-    });
-
-    // Clear confirmation when delete is complete
-    useEffect(() => {
-        if (deleteFetcher.data?.success) {
-            deleteConfirmation.hideConfirmation();
-        } else if (deleteFetcher.data?.error) {
-            alert(`Error: ${deleteFetcher.data.error}`);
-            deleteConfirmation.hideConfirmation();
-        }
-    }, [deleteFetcher.data]);
-
-    return (
-        <>
-            {modelConfigs.length > 0 ? (
-                <div className="space-y-4">
-                    <HeadingBreak label="Your Model Configurations" />
-                    <div className="space-y-2">
-                        {modelConfigs.map((config) => (
-                            <div key={config.id} className="flex items-center justify-between py-3 px-4 bg-theme-surface-secondary rounded-lg">
-                                <div>
-                                    <h3 className="font-medium text-lg">{config.name || 'Unnamed Configuration'}</h3>
-                                    <p className="text-sm text-gray-300">
-                                        {modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}
-                                    </p>
-                                </div>
-                                <div className="flex space-x-2">
-                                    <ActionButton
-                                        label="Edit"
-                                        className="px-3 py-1 text-sm"
-                                        onClick={() => {
-                                            setInitialValues(config);
-                                            setFormHidden(false);
-                                        }}
-                                    />
-                                    <ActionButton
-                                        label="Delete"
-                                        className="px-3 py-1 text-sm bg-theme-error hover:bg-theme-error-hover"
-                                        onClick={() => deleteConfirmation.showConfirmation(config.id)}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ) : (
-                <div className="py-6 text-center">
-                    <p className="text-gray-400">No model configurations found</p>
-                </div>
-            )}
-
-            {/* Edit form */}
-            {formHidden ? (
-                <div className="text-center">
-                    <ActionButton label="Create New Configuration" onClick={() => setFormHidden(false)} />
-                </div>
-            ) : (
-                <div>
-                    <ModelConfigForm
-                        modelProviders={modelProviders}
-                        initialValues={initialValues}
-                        onCancel={hideForm}
-                        onSuccess={hideForm}
-                    />
-                </div>
-            )}
-            {deleteConfirmation.ConfirmationOverlayComponent}
-        </>
     );
 }
 
