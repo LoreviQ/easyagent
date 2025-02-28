@@ -48,7 +48,7 @@ function AgentCard({ agent }: { agent: Agent }) {
         : 'Unknown date';
 
     return (
-        <div className="bg-theme-surface-secondary rounded-lg overflow-hidden shadow-md relative">
+        <div className="bg-theme-bg-card-2 rounded-lg overflow-hidden shadow-md relative">
             {/* Public/Private indicator */}
             <div className="absolute top-2 right-2 z-10">
                 <span className={`px-2 py-1 text-xs rounded-full ${agent.is_public

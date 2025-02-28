@@ -123,7 +123,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     // Insert new agent into the database
-    const { data: agent, error: insertError } = await supabase
+    const { error: insertError } = await supabase
         .from('agents')
         .insert({
             owner_id: user.id,
