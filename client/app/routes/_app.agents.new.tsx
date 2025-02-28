@@ -6,7 +6,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { getSupabaseAuth } from "~/utils/supabase";
 import { HeadingBreak } from "~/components/cards";
 import { SubmitButton } from "~/components/buttons";
-import type { Agent } from "~/types/database";
+import type { Agent, UserModelConfig, ModelProvider } from "~/types/database";
 
 type ActionData = {
     success?: boolean;
@@ -31,11 +31,7 @@ export async function action({ request }: ActionFunctionArgs) {
     // Parse form data
     const formData = await request.formData();
     const name = formData.get("name") as string;
-    const system_prompt = formData.get("system_prompt") as string;
-    const bio = formData.get("bio") as string;
-    const lore = formData.get("lore") as string;
-    const is_public = formData.get("is_public") === "true";
-    const user_model_config_id = formData.get("user_model_config_id") as string || null;
+
 
     // Validate form data
     const fieldErrors: ActionData["fieldErrors"] = {};
@@ -47,48 +43,17 @@ export async function action({ request }: ActionFunctionArgs) {
         return Response.json({ fieldErrors } as ActionData, { status: 400 });
     }
 
-    // Insert new agent
-    const { data, error } = await supabase
-        .from("agents")
-        .insert([
-            {
-                owner_id: user.id,
-                name,
-                system_prompt: system_prompt || null,
-                bio: bio || null,
-                lore: lore || null,
-                is_public,
-                user_model_config_id: user_model_config_id || null,
-            },
-        ])
-        .select();
+    // Insert new agent -- TODO
 
-    if (error) {
-        console.error("Error creating agent:", error);
-        return Response.json({ error: error.message } as ActionData, { status: 500 });
-    }
-
-    // Redirect to the agents page
     return redirect("/agents");
 }
 
-// Type for the model configurations
-type ModelConfig = {
-    id: string;
-    name: string;
-    model_provider_id: string;
-    // Add other fields as needed
-};
 
-type ModelProvider = {
-    id: string;
-    name: string;
-};
 
 type AgentsContext = {
     agents: Agent[];
-    modelConfigs?: ModelConfig[];
-    modelProviders?: ModelProvider[];
+    modelConfigs: UserModelConfig[];
+    modelProviders: ModelProvider[];
 };
 
 export default function NewAgent() {

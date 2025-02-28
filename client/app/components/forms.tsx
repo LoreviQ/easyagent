@@ -1,10 +1,6 @@
 import { useFetcher } from "@remix-run/react";
 import { useState, useEffect } from "react";
-
-interface ModelProvider {
-    id: string;
-    name: string;
-}
+import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 // Define the response type for the form submission
 export interface FormActionResponse {
@@ -14,12 +10,7 @@ export interface FormActionResponse {
 }
 
 interface ModelConfigFormProps {
-    initialValues?: {
-        id?: string;
-        name: string;
-        model_provider_id: string;
-        api_key: string;
-    };
+    initialValues?: UserModelConfig | null;
     modelProviders?: ModelProvider[];
     onCancel: () => void;
     onSuccess?: () => void;

@@ -11,6 +11,7 @@ import { PROVIDERS } from "~/types/providers";
 import { ModelConfigForm, FormActionResponse } from "~/components/forms";
 import { ActionButton } from "~/components/buttons";
 import { useConfirmationOverlay } from "~/components/overlays";
+import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 export async function loader({ request }: { request: Request }) {
     const { supabase } = getSupabaseAuth(request);
@@ -41,8 +42,8 @@ export async function loader({ request }: { request: Request }) {
     }
 
     return {
-        modelConfigs: modelConfigs || [],
-        modelProviders: modelProviders || []
+        modelConfigs: modelConfigs as UserModelConfig[] || [],
+        modelProviders: modelProviders as ModelProvider[] || []
     };
 }
 
@@ -93,8 +94,12 @@ export default function Settings() {
 
     return (
         <div className="space-y-6">
-            <ModelConfigurations />
-            <Accounts />
+            <ContentCard title="Model Configurations">
+                <ModelConfigurations />
+            </ContentCard>
+            <ContentCard title="Accounts">
+                <Accounts />
+            </ContentCard>
         </div>
     );
 }
@@ -103,7 +108,7 @@ export default function Settings() {
 function ModelConfigurations() {
     const { modelConfigs, modelProviders } = useLoaderData<typeof loader>();
     const [formHidden, setFormHidden] = useState(true);
-    const [initialValues, setInitialValues] = useState<any>(null);
+    const [initialValues, setInitialValues] = useState<UserModelConfig | null>(null);
     const deleteFetcher = useFetcher<FormActionResponse>();
 
     // Helper function to reset form state
@@ -143,7 +148,7 @@ function ModelConfigurations() {
     }, [deleteFetcher.data]);
 
     return (
-        <ContentCard title="Model Configurations">
+        <>
             {modelConfigs.length > 0 ? (
                 <div className="space-y-4">
                     <HeadingBreak label="Your Model Configurations" />
@@ -197,7 +202,7 @@ function ModelConfigurations() {
                 </div>
             )}
             {deleteConfirmation.ConfirmationOverlayComponent}
-        </ContentCard>
+        </>
     );
 }
 
@@ -212,7 +217,7 @@ function Accounts() {
         (provider) => !userData.identities?.some((identity) => identity.provider === provider.id)
     );
     return (
-        <ContentCard title="Accounts">
+        <>
             <HeadingBreak label="Connected Accounts" />
             <div className="space-y-2">
                 {connectedProviders.map((provider) => (
@@ -241,7 +246,7 @@ function Accounts() {
                     </div>
                 </>
             )}
-        </ContentCard>
+        </>
     );
 }
 

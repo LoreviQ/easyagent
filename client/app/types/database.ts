@@ -12,4 +12,22 @@ export type Agent = {
     bio: string | null;
     lore: string | null;
     user_model_config_id: string | null;
+};
+
+export type ModelProvider = {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    name: string;
+};
+
+export type UserModelConfig = {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    owner_id: string;
+    model_provider_id: string;
+    api_key: string;
+    name: string;
+    is_default: boolean;
 }; 

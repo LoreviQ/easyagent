@@ -3,7 +3,7 @@ import { type LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
 import { getSupabaseAuth } from "~/utils/supabase";
-
+import type { Agent, UserModelConfig, ModelProvider } from "~/types/database";
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const { supabase } = getSupabaseAuth(request);
@@ -45,9 +45,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     return {
-        agents: agents || [],
-        modelConfigs: modelConfigs || [],
-        modelProviders: modelProviders || []
+        agents: agents as Agent[] || [],
+        modelConfigs: modelConfigs as UserModelConfig[] || [],
+        modelProviders: modelProviders as ModelProvider[] || []
     };
 }
 
