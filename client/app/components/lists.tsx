@@ -4,28 +4,17 @@ import { useConfirmationOverlay } from "~/components/overlays";
 import { HeadingBreak } from "~/components/cards";
 import { ActionButton } from "~/components/buttons";
 import { ModelConfigForm, FormActionResponse } from "~/components/forms";
-import type { UserModelConfig } from "~/types/database";
+import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 // Displays the user's model configurations
-export function ModelConfigurations() {
-    const configsFetcher = useFetcher<{ modelConfigs: UserModelConfig[], modelProviders: any[] }>();
-    const [modelConfigs, setModelConfigs] = useState<UserModelConfig[]>([]);
-    const [modelProviders, setModelProviders] = useState<any[]>([]);
+interface ModelConfigurationsProps {
+    modelConfigs: UserModelConfig[];
+    modelProviders: ModelProvider[];
+}
+export function ModelConfigurations({ modelConfigs, modelProviders }: ModelConfigurationsProps) {
     const [formHidden, setFormHidden] = useState(true);
     const [initialValues, setInitialValues] = useState<UserModelConfig | null>(null);
     const deleteFetcher = useFetcher<FormActionResponse>();
-
-    // Fetch model configurations and providers
-    useEffect(() => {
-        if (configsFetcher.state === "idle" && !configsFetcher.data) {
-            configsFetcher.load("/api/get-model-configs");
-        }
-
-        if (configsFetcher.data) {
-            setModelConfigs(configsFetcher.data.modelConfigs || []);
-            setModelProviders(configsFetcher.data.modelProviders || []);
-        }
-    }, [configsFetcher]);
 
     // Helper function to reset form state
     const hideForm = () => {

@@ -1,12 +1,47 @@
 import { useState } from "react";
-import { Form, useActionData, Link, useOutletContext } from "@remix-run/react";
+import { Form, useActionData, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs } from "@remix-run/node";
 
 import { getSupabaseAuth } from "~/utils/supabase";
 import { SubmitButton } from "~/components/buttons";
-import type { Agent, UserModelConfig, ModelProvider } from "~/types/database";
+import type { UserModelConfig, ModelProvider } from "~/types/database";
 import { ModelConfigurations } from "~/components/lists";
+
+export async function loader({ request }: { request: Request }) {
+    const { supabase } = getSupabaseAuth(request);
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        console.error("Error fetching user:", userError);
+        throw redirect("/login");
+    }
+
+    // Fetch user model configurations
+    const { data: modelConfigs, error: configsError } = await supabase
+        .from('user_model_configs')
+        .select('*')
+        .eq('owner_id', user.id);
+
+    if (configsError) {
+        console.error("Error fetching model configurations:", configsError);
+    }
+
+    // Fetch model providers
+    const { data: modelProviders, error: providersError } = await supabase
+        .from('model_providers')
+        .select('id, name');
+
+    if (providersError) {
+        console.error("Error fetching model providers:", providersError);
+    }
+
+    return {
+        modelConfigs: modelConfigs as UserModelConfig[] || [],
+        modelProviders: modelProviders as ModelProvider[] || []
+    };
+}
+
 
 type ActionData = {
     success?: boolean;
@@ -48,22 +83,12 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect("/agents");
 }
 
-
-
-type AgentsContext = {
-    agents: Agent[];
-    modelConfigs: UserModelConfig[];
-    modelProviders: ModelProvider[];
-};
-
 export default function NewAgent() {
     const actionData = useActionData<typeof action>();
     const [isPublic, setIsPublic] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const { modelConfigs, modelProviders } = useLoaderData<typeof loader>();
     const [selectedModelConfig, setSelectedModelConfig] = useState<string | null>(null);
-
-    // We'll need to fetch model configs from the parent route
-    const { modelConfigs = [], modelProviders = [] } = useOutletContext<AgentsContext>();
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -197,7 +222,7 @@ export default function NewAgent() {
 
                 {/* Model Configurations */}
                 <div className="mb-6">
-                    <ModelConfigurations />
+                    <ModelConfigurations modelConfigs={modelConfigs} modelProviders={modelProviders} />
                 </div>
 
                 {/* Form actions */}

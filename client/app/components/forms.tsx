@@ -11,19 +11,18 @@ export interface FormActionResponse {
 
 interface ModelConfigFormProps {
     initialValues?: UserModelConfig | null;
-    modelProviders?: ModelProvider[];
+    modelProviders: ModelProvider[];
     onCancel: () => void;
     onSuccess?: () => void;
 }
 
 export function ModelConfigForm({
     initialValues,
-    modelProviders: providedModelProviders,
+    modelProviders,
     onCancel,
     onSuccess
 }: ModelConfigFormProps) {
     const formFetcher = useFetcher<FormActionResponse>();
-    const providersFetcher = useFetcher<{ modelProviders: ModelProvider[] }>();
     const isSubmitting = formFetcher.state === "submitting";
     const isEdit = !!initialValues?.id;
 
@@ -33,13 +32,6 @@ export function ModelConfigForm({
         : "/api/create-model-config";
 
     const [apiKeyChanged, setApiKeyChanged] = useState(false);
-
-    // Fetch model providers only if not provided
-    useEffect(() => {
-        if (!providedModelProviders && providersFetcher.state === "idle" && !providersFetcher.data) {
-            providersFetcher.load("/api/get-model-providers");
-        }
-    }, [providersFetcher, providedModelProviders]);
 
     // Handle form submission response
     useEffect(() => {
@@ -51,10 +43,6 @@ export function ModelConfigForm({
             }
         }
     }, [formFetcher.data, formFetcher.state, onSuccess]);
-
-    // Use provided model providers if available, otherwise use fetched ones
-    const modelProviders = providedModelProviders || providersFetcher.data?.modelProviders || [];
-    const isLoadingProviders = !providedModelProviders && (providersFetcher.state !== "idle" || !providersFetcher.data);
 
     return (
         <div className="p-4 bg-theme-surface-secondary rounded-lg">
@@ -91,11 +79,8 @@ export function ModelConfigForm({
                             required
                             defaultValue={initialValues?.model_provider_id || ""}
                             className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                            disabled={isLoadingProviders}
                         >
-                            <option value="">
-                                {isLoadingProviders ? "Loading providers..." : "Select a provider"}
-                            </option>
+
                             {modelProviders.map(provider => (
                                 <option key={provider.id} value={provider.id}>
                                     {provider.name}
@@ -136,7 +121,7 @@ export function ModelConfigForm({
                         </button>
                         <button
                             type="submit"
-                            disabled={isSubmitting || isLoadingProviders}
+                            disabled={isSubmitting}
                             className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover rounded flex items-center"
                         >
                             {isSubmitting ? (
