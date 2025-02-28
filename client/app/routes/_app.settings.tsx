@@ -14,8 +14,6 @@ import { useConfirmationOverlay } from "~/components/overlays";
 
 export async function loader({ request }: { request: Request }) {
     const { supabase } = getSupabaseAuth(request);
-
-    // Get the current user with getUser() for better security
     const { data: { user }, error: userError } = await supabase.auth.getUser();
 
     if (userError || !user) {
