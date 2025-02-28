@@ -45,7 +45,7 @@ export function ModelConfigForm({
     }, [formFetcher.data, formFetcher.state, onSuccess]);
 
     return (
-        <div className="p-4 bg-theme-surface-secondary rounded-lg">
+        <div className="bg-theme-surface-secondary rounded-lg">
             <h3 className="font-medium text-lg mb-4">
                 {isEdit ? "Edit Configuration" : "Create New Configuration"}
             </h3>
@@ -55,12 +55,12 @@ export function ModelConfigForm({
 
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium mb-1">
+                        <label htmlFor="config_name" className="block text-sm font-medium mb-1">
                             Configuration Name
                         </label>
                         <input
                             type="text"
-                            id="name"
+                            id="config_name"
                             name="name"
                             required
                             defaultValue={initialValues?.name || ""}
@@ -70,17 +70,16 @@ export function ModelConfigForm({
                     </div>
 
                     <div>
-                        <label htmlFor="model_provider_id" className="block text-sm font-medium mb-1">
+                        <label htmlFor="config_model_provider_id" className="block text-sm font-medium mb-1">
                             Model Provider
                         </label>
                         <select
-                            id="model_provider_id"
+                            id="config_model_provider_id"
                             name="model_provider_id"
                             required
                             defaultValue={initialValues?.model_provider_id || ""}
                             className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
                         >
-
                             {modelProviders.map(provider => (
                                 <option key={provider.id} value={provider.id}>
                                     {provider.name}
@@ -90,12 +89,12 @@ export function ModelConfigForm({
                     </div>
 
                     <div>
-                        <label htmlFor="api_key" className="block text-sm font-medium mb-1">
+                        <label htmlFor="config_api_key" className="block text-sm font-medium mb-1">
                             API Key {isEdit && !apiKeyChanged && <span className="text-xs text-gray-400">(enter new key to change)</span>}
                         </label>
                         <input
                             type="password"
-                            id="api_key"
+                            id="config_api_key"
                             name="api_key"
                             required={!isEdit}
                             onChange={() => setApiKeyChanged(true)}
@@ -111,7 +110,7 @@ export function ModelConfigForm({
                         )}
                     </div>
 
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end space-x-2 pt-4">
                         <button
                             type="button"
                             onClick={onCancel}

@@ -21,7 +21,7 @@ export function ModelConfigurations({
     selectedModelConfig,
     setSelectedModelConfig
 }: ModelConfigurationsProps) {
-    const [formHidden, setFormHidden] = useState(true);
+    const [showFormModal, setShowFormModal] = useState(false);
     const [initialValues, setInitialValues] = useState<UserModelConfig | null>(null);
     const deleteFetcher = useFetcher<FormActionResponse>();
 
@@ -31,7 +31,7 @@ export function ModelConfigurations({
     // Helper function to reset form state
     const hideForm = () => {
         setInitialValues(null);
-        setFormHidden(true);
+        setShowFormModal(false);
     };
 
     // Execute delete when confirmed
@@ -97,7 +97,7 @@ export function ModelConfigurations({
                                         className="px-3 py-1 text-sm"
                                         onClick={() => {
                                             setInitialValues(config);
-                                            setFormHidden(false);
+                                            setShowFormModal(true);
                                         }}
                                     />
                                     <ActionButton
@@ -116,21 +116,33 @@ export function ModelConfigurations({
                 </div>
             )}
 
-            {/* Edit form */}
-            {formHidden ? (
-                <div className="text-center">
-                    <ActionButton label="Create New Configuration" onClick={() => setFormHidden(false)} />
-                </div>
-            ) : (
-                <div>
-                    <ModelConfigForm
-                        modelProviders={modelProviders}
-                        initialValues={initialValues}
-                        onCancel={hideForm}
-                        onSuccess={hideForm}
-                    />
+            {/* Button to create new configuration */}
+            <div className="text-center mt-4">
+                <ActionButton
+                    label="Create New Configuration"
+                    onClick={() => {
+                        setInitialValues(null);
+                        setShowFormModal(true);
+                    }}
+                />
+            </div>
+
+            {/* Modal for edit/create form */}
+            {showFormModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-theme-bg-card rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div className="p-4">
+                            <ModelConfigForm
+                                modelProviders={modelProviders}
+                                initialValues={initialValues}
+                                onCancel={hideForm}
+                                onSuccess={hideForm}
+                            />
+                        </div>
+                    </div>
                 </div>
             )}
+
             {deleteConfirmation.ConfirmationOverlayComponent}
         </>
     );

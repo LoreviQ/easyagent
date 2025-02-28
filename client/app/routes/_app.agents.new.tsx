@@ -228,6 +228,13 @@ export default function NewAgent() {
                         selectedModelConfig={selectedModelConfig}
                         setSelectedModelConfig={setSelectedModelConfig}
                     />
+
+                    {/* Hidden input to store the selected model config ID */}
+                    <input
+                        type="hidden"
+                        name="user_model_config_id"
+                        value={selectedModelConfig || ''}
+                    />
                 </div>
 
                 {/* Form actions */}
