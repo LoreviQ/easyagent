@@ -4,9 +4,9 @@ import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs } from "@remix-run/node";
 
 import { getSupabaseAuth } from "~/utils/supabase";
-import { HeadingBreak } from "~/components/cards";
 import { SubmitButton } from "~/components/buttons";
 import type { Agent, UserModelConfig, ModelProvider } from "~/types/database";
+import { ModelConfigurations } from "~/components/lists";
 
 type ActionData = {
     success?: boolean;
@@ -197,43 +197,7 @@ export default function NewAgent() {
 
                 {/* Model Configurations */}
                 <div className="mb-6">
-                    <HeadingBreak label="Model Configuration" />
-
-                    {modelConfigs.length > 0 ? (
-                        <div className="space-y-2 mt-4">
-                            {modelConfigs.map((config) => (
-                                <div key={config.id} className="flex items-center justify-between py-3 px-4 bg-theme-surface-secondary rounded-lg">
-                                    <div className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            id={`config-${config.id}`}
-                                            name="user_model_config_id"
-                                            value={config.id}
-                                            checked={selectedModelConfig === config.id}
-                                            onChange={() => setSelectedModelConfig(config.id)}
-                                            className="h-4 w-4 text-theme-primary focus:ring-theme-primary border-theme-border"
-                                        />
-                                        <div className="ml-3">
-                                            <h3 className="font-medium text-lg">{config.name || 'Unnamed Configuration'}</h3>
-                                            <p className="text-sm text-gray-300">
-                                                {modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="py-6 text-center">
-                            <p className="text-gray-400">No model configurations found</p>
-                            <Link
-                                to="/settings"
-                                className="inline-block mt-2 text-theme-primary hover:underline"
-                            >
-                                Create a model configuration
-                            </Link>
-                        </div>
-                    )}
+                    <ModelConfigurations />
                 </div>
 
                 {/* Form actions */}
