@@ -55,8 +55,8 @@ function sidebarContent(isOpen: boolean) {
             icon: <BlockIcon className="w-6 h-6" />,
         },
         {
-            name: "Agent",
-            path: "/agent",
+            name: "Agents",
+            path: "/agents",
             icon: <BuildingIcon className="w-6 h-6" />,
         },
         {
