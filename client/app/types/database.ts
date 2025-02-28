@@ -14,13 +14,6 @@ export type Agent = {
     user_model_config_id: string | null;
 };
 
-export type ModelProvider = {
-    id: string;
-    created_at: string;
-    updated_at: string;
-    name: string;
-};
-
 export type UserModelConfig = {
     id: string;
     created_at: string;
@@ -30,4 +23,11 @@ export type UserModelConfig = {
     api_key: string;
     name: string;
     is_default: boolean;
-}; 
+};
+
+export type ModelProvider = {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    name: string;
+};
