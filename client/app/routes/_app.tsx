@@ -19,15 +19,21 @@ export async function loader({ request }: { request: Request }) {
     if (!session) {
         throw redirect("/login");
     }
-    const userData = (await supabase.auth.getUser()).data.user;
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
+        console.error("Error fetching user:", userError);
+        throw redirect("/login");
+    }
     const cookieHeader = request.headers.get("Cookie");
     const preferences = (await prefsCookie.parse(cookieHeader)) || DEFAULT_PREFS;
-    return Response.json({ userData, preferences });
+
+    // Fetch user model configurations
+    return Response.json({ user, preferences });
 }
 
 export default function App() {
     const loaderData = useLoaderData<typeof loader>();
-    const userData = loaderData.userData;
+    const userData = loaderData.user;
     const preferences = loaderData.preferences as PrefsCookie;
 
     return (
