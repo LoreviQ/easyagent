@@ -222,7 +222,12 @@ export default function NewAgent() {
 
                 {/* Model Configurations */}
                 <div className="mb-6">
-                    <ModelConfigurations modelConfigs={modelConfigs} modelProviders={modelProviders} />
+                    <ModelConfigurations
+                        modelConfigs={modelConfigs}
+                        modelProviders={modelProviders}
+                        selectedModelConfig={selectedModelConfig}
+                        setSelectedModelConfig={setSelectedModelConfig}
+                    />
                 </div>
 
                 {/* Form actions */}

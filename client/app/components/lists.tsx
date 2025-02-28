@@ -10,11 +10,23 @@ import type { UserModelConfig, ModelProvider } from "~/types/database";
 interface ModelConfigurationsProps {
     modelConfigs: UserModelConfig[];
     modelProviders: ModelProvider[];
+    // Optional for radio selection
+    selectedModelConfig?: string | null;
+    setSelectedModelConfig?: (id: string) => void;
 }
-export function ModelConfigurations({ modelConfigs, modelProviders }: ModelConfigurationsProps) {
+
+export function ModelConfigurations({
+    modelConfigs,
+    modelProviders,
+    selectedModelConfig,
+    setSelectedModelConfig
+}: ModelConfigurationsProps) {
     const [formHidden, setFormHidden] = useState(true);
     const [initialValues, setInitialValues] = useState<UserModelConfig | null>(null);
     const deleteFetcher = useFetcher<FormActionResponse>();
+
+    // Determine if we're in selection mode
+    const isSelectionMode = selectedModelConfig !== undefined && setSelectedModelConfig !== undefined;
 
     // Helper function to reset form state
     const hideForm = () => {
@@ -60,11 +72,24 @@ export function ModelConfigurations({ modelConfigs, modelProviders }: ModelConfi
                     <div className="space-y-2">
                         {modelConfigs.map((config) => (
                             <div key={config.id} className="flex items-center justify-between py-3 px-4 bg-theme-surface-secondary rounded-lg">
-                                <div>
-                                    <h3 className="font-medium text-lg">{config.name || 'Unnamed Configuration'}</h3>
-                                    <p className="text-sm text-gray-300">
-                                        {modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}
-                                    </p>
+                                <div className="flex items-center flex-1">
+                                    {isSelectionMode && (
+                                        <input
+                                            type="radio"
+                                            id={`config-${config.id}`}
+                                            name="user_model_config_id"
+                                            value={config.id}
+                                            checked={selectedModelConfig === config.id}
+                                            onChange={() => setSelectedModelConfig(config.id)}
+                                            className="h-4 w-4 text-theme-primary focus:ring-theme-primary border-theme-border mr-3"
+                                        />
+                                    )}
+                                    <div>
+                                        <h3 className="font-medium text-lg">{config.name || 'Unnamed Configuration'}</h3>
+                                        <p className="text-sm text-gray-300">
+                                            {modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}
+                                        </p>
+                                    </div>
                                 </div>
                                 <div className="flex space-x-2">
                                     <ActionButton
