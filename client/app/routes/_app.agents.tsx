@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext, type ShouldRevalidateFunction } from "@remix-run/react";
 import { type LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
@@ -32,6 +32,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
         agents: agents || [],
     };
 }
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+    formMethod,
+    currentUrl,
+    nextUrl,
+    defaultShouldRevalidate
+}) => {
+    console.log("agents shouldRevalidate called", {
+        currentUrl: currentUrl.pathname,
+        nextUrl: nextUrl.pathname
+    });
+
+    // Don't revalidate when navigating between agent child routes
+    // For example, from /agents/123 to /agents/new
+    if (currentUrl.pathname.startsWith('/agents/') &&
+        nextUrl.pathname.startsWith('/agents/')) {
+        return false;
+    }
+
+    // Also don't revalidate when navigating from /agents to any /agents/* route
+    if ((currentUrl.pathname === '/agents' && nextUrl.pathname.startsWith('/agents/')) ||
+        (nextUrl.pathname === '/agents' && currentUrl.pathname.startsWith('/agents/'))) {
+        return false;
+    }
+
+    return defaultShouldRevalidate;
+};
 
 export default function Agents() {
     const { agents } = useLoaderData<{ agents: Agent[] }>();

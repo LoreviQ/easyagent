@@ -285,7 +285,7 @@ export function AnimatedLoadingIcon({ className = "", location = "" }: AnimatedL
         "": "page",
         "/settings": "Settings",
         "/dashboard": "Dashboard",
-        "/agent": "Agent",
+        "/agents": "your Agents",
     };
 
     return (

@@ -1,6 +1,6 @@
 import { redirect } from "@remix-run/node";
 import { useLoaderData, useNavigation } from "@remix-run/react";
-import { Outlet } from "@remix-run/react";
+import { Outlet, type ShouldRevalidateFunction } from "@remix-run/react";
 import type { User } from "@supabase/supabase-js";
 
 import type { PrefsCookie } from "~/utils/cookies";
@@ -13,7 +13,8 @@ import { PreferencesProvider, usePreferences } from "~/contexts/preferences";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 export async function loader({ request }: { request: Request }) {
-    console.log("loader");
+    console.log("_app loader called with URL:", request.url);
+
     const { supabase } = getSupabaseAuth(request);
     const {
         data: { session },
@@ -49,6 +50,35 @@ export async function loader({ request }: { request: Request }) {
     }
 
     return { user, preferences, modelConfigs, modelProviders }
+}
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+    formMethod,
+    currentUrl,
+    nextUrl,
+    defaultShouldRevalidate
+}) => {
+    console.log("shouldRevalidate called", {
+        currentUrl: currentUrl.pathname,
+        nextUrl: nextUrl.pathname
+    });
+
+    // Only apply this logic to routes under _app (which appear as /agents, /settings, etc.)
+    // Check if we're navigating between two routes that are both under _app
+    const appRoutePatterns = ['/agents', '/settings', '/dashboard'];
+
+    const isCurrentAppRoute = appRoutePatterns.some(pattern =>
+        currentUrl.pathname === pattern || currentUrl.pathname.startsWith(`${pattern}/`));
+
+    const isNextAppRoute = appRoutePatterns.some(pattern =>
+        nextUrl.pathname === pattern || nextUrl.pathname.startsWith(`${pattern}/`));
+
+    if (isCurrentAppRoute && isNextAppRoute) {
+        // Don't revalidate when navigating between _app child routes
+        return false;
+    }
+
+    return defaultShouldRevalidate;
 }
 
 export default function App() {
@@ -89,3 +119,4 @@ function Layout({ userData, modelConfigs, modelProviders }: LayoutProps) {
         </div>
     );
 }
+
