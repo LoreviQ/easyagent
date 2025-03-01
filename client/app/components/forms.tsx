@@ -4,7 +4,7 @@ import type { UserModelConfig, ModelProvider } from "~/types/database";
 import { Form, Link } from "@remix-run/react";
 import { SubmitButton } from "~/components/buttons";
 import { ModelConfigurations } from "~/components/lists";
-import { InsertAgentActionData } from "~/routes/api.insert-agent";
+import { AgentActionData } from "~/routes/api.agent";
 
 // Define the response type for the form submission
 export interface FormActionResponse {
@@ -154,7 +154,7 @@ interface AgentFormProps {
 }
 
 export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
-    const actionData = useActionData<InsertAgentActionData>();
+    const actionData = useActionData<AgentActionData>();
     const [isPublic, setIsPublic] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const [selectedModelConfig, setSelectedModelConfig] = useState<string | null>(null);
@@ -169,12 +169,15 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
     };
 
     return (
-        <Form method="post" action="/api/insert-agent" className="bg-theme-bg-card/70 rounded-lg p-6 shadow-lg" encType="multipart/form-data">
+        <Form method="post" action="/api/agent" className="bg-theme-bg-card/70 rounded-lg p-6 shadow-lg" encType="multipart/form-data">
             {actionData?.error && (
                 <div className="p-4 mb-6 bg-theme-error/20 text-theme-error rounded-md">
                     {actionData.error}
                 </div>
             )}
+
+            {/* Hidden action field for the combined endpoint */}
+            <input type="hidden" name="action" value="insert" />
 
             <div className="flex flex-col md:flex-row gap-6 mb-6">
                 {/* Avatar upload section */}
