@@ -13,6 +13,7 @@ import { PreferencesProvider, usePreferences } from "~/contexts/preferences";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 export async function loader({ request }: { request: Request }) {
+    console.log("loader");
     const { supabase } = getSupabaseAuth(request);
     const {
         data: { session },
@@ -47,7 +48,7 @@ export async function loader({ request }: { request: Request }) {
         console.error("Error fetching model providers:", providersError);
     }
 
-    return Response.json({ user, preferences, modelConfigs, modelProviders });
+    return { user, preferences, modelConfigs, modelProviders }
 }
 
 export default function App() {

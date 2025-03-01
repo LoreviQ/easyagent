@@ -1,17 +1,11 @@
-import { useOutletContext, useLoaderData } from "@remix-run/react";
+import { useOutletContext, useParams } from "@remix-run/react";
 
 import type { Agent, UserModelConfig, ModelProvider } from "~/types/database";
 import { AgentForm } from "~/components/forms";
-import { LoaderFunctionArgs } from "@remix-run/node";
-
-export async function loader({ request, params }: LoaderFunctionArgs) {
-    const { agentId } = params;
-    return { agentId };
-}
 
 export default function AgentDetail() {
     const { agents, modelConfigs, modelProviders } = useOutletContext<{ agents: Agent[], modelConfigs: UserModelConfig[], modelProviders: ModelProvider[] }>();
-    const { agentId } = useLoaderData<typeof loader>();
+    const { agentId } = useParams();
     const agent = agents.find(a => a.id === agentId);
 
     return (
