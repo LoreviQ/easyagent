@@ -97,7 +97,7 @@ export function ModelConfigurations({
                                 <div className="flex space-x-2">
                                     <ActionButton
                                         label="Edit"
-                                        className="px-3 py-1 text-sm"
+                                        className="bg-theme-warning hover:bg-theme-warning-hover"
                                         onClick={() => {
                                             setInitialValues(config);
                                             setShowFormModal(true);
@@ -105,7 +105,7 @@ export function ModelConfigurations({
                                     />
                                     <ActionButton
                                         label="Delete"
-                                        className="px-3 py-1 text-sm bg-theme-error hover:bg-theme-error-hover"
+                                        className="bg-theme-error hover:bg-theme-error-hover"
                                         onClick={() => deleteConfirmation.showConfirmation(config.id)}
                                     />
                                 </div>
@@ -123,6 +123,7 @@ export function ModelConfigurations({
             <div className="text-center mt-4">
                 <ActionButton
                     label="Create New Configuration"
+                    className="bg-theme-accent hover:bg-theme-accent-hover"
                     onClick={() => {
                         setInitialValues(null);
                         setShowFormModal(true);

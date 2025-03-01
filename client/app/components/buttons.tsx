@@ -37,7 +37,7 @@ export function SubmitButton({ label, className }: { label: string; className?: 
 
 export function NavButton({ label, className, path }: { label: string; className?: string; path: string }) {
     return (
-        <Link to={path} className={`px-4 py-2 text-white rounded-3xl ${className}`} type="submit">
+        <Link to={path} className={`px-4 py-2 text-white rounded-3xl ${className}`}>
             {label}
         </Link>
     );
@@ -47,7 +47,7 @@ export function ActionButton({ label, className, onClick }: { label: string; cla
     return (
         <button
             onClick={onClick}
-            className={`px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover rounded ${className}`}
+            className={`px-4 py-2 text-white rounded ${className}`}
         >
             {label}
         </button>

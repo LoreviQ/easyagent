@@ -4,6 +4,7 @@ import { format } from "date-fns";
 
 import { ContentCard, HeadingBreak } from "~/components/cards";
 import type { Agent } from "~/types/database";
+import { NavButton } from "~/components/buttons";
 
 type AgentsContext = {
     agents: Agent[];
@@ -30,12 +31,11 @@ export default function AgentsIndex() {
                     </div>
                 )}
                 <div className="text-center mt-6">
-                    <Link
-                        to="/agents/new"
-                        className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-theme-primary hover:bg-theme-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-primary"
-                    >
-                        Create New Agent
-                    </Link>
+                    <NavButton
+                        label="Create New Agent"
+                        path="/agents/new"
+                        className="bg-theme-primary hover:bg-theme-primary-hover"
+                    />
                 </div>
             </ContentCard>
         </div>
