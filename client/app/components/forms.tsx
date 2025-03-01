@@ -242,18 +242,23 @@ export function AgentForm({ initialValues, modelConfigs, modelProviders, readOnl
                     </div>
 
                     <div className="flex items-center">
-                        <input
-                            type="checkbox"
-                            id="is_public"
-                            name="is_public"
-                            value="true"
-                            checked={isPublic}
-                            onChange={() => !readOnly && setIsPublic(!isPublic)}
-                            disabled={readOnly}
-                            className="h-4 w-4 text-theme-primary focus:ring-theme-primary border-theme-border rounded"
-                        />
-                        <label htmlFor="is_public" className="ml-2 block text-sm">
-                            {isPublic ? "Public agent" : "Private agent"}
+                        <label htmlFor="is_public" className="inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                id="is_public"
+                                name="is_public"
+                                value="true"
+                                checked={isPublic}
+                                onChange={() => !readOnly && setIsPublic(!isPublic)}
+                                disabled={readOnly}
+                                className="sr-only"
+                            />
+                            <div className={`relative w-11 h-6 bg-gray-600 rounded-full transition-colors ${isPublic ? 'bg-theme-primary' : ''} ${readOnly ? 'opacity-60' : ''}`}>
+                                <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${isPublic ? 'transform translate-x-5' : ''}`}></div>
+                            </div>
+                            <span className="ml-2 text-sm">
+                                {isPublic ? "Public agent" : "Private agent"}
+                            </span>
                         </label>
                     </div>
                 </div>
