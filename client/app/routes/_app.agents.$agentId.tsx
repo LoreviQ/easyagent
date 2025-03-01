@@ -10,12 +10,12 @@ export default function AgentDetail() {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl font-bold text-center mb-8">Agent Details</h1>
             <AgentForm
                 initialValues={agent}
                 modelConfigs={modelConfigs}
                 modelProviders={modelProviders}
                 readOnly={true}
+                title={"Agent Details"}
             />
         </div>
     );

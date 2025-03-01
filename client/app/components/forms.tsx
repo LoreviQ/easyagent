@@ -1,7 +1,7 @@
 import { useFetcher, useActionData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
-import { Form, Link } from "@remix-run/react";
+import { Form } from "@remix-run/react";
 import { NavButton, SubmitButton } from "~/components/buttons";
 import { ModelConfigurations } from "~/components/lists";
 import { AgentActionData } from "~/routes/api.agent";
@@ -149,13 +149,14 @@ export function ModelConfigForm({
 
 
 interface AgentFormProps {
-    initialValues?: any;
     modelConfigs: UserModelConfig[];
     modelProviders: ModelProvider[];
+    initialValues?: any;
     readOnly?: boolean;
+    title?: string;
 }
 
-export function AgentForm({ initialValues, modelConfigs, modelProviders, readOnly = false }: AgentFormProps) {
+export function AgentForm({ modelConfigs, modelProviders, initialValues, readOnly = false, title = "Create New Agent" }: AgentFormProps) {
     const actionData = useActionData<AgentActionData>();
     const [isPublic, setIsPublic] = useState(initialValues?.is_public || false);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(initialValues?.avatar_url || null);
@@ -174,6 +175,7 @@ export function AgentForm({ initialValues, modelConfigs, modelProviders, readOnl
 
     return (
         <Form method="post" action="/api/agent" className="bg-theme-bg-card/70 rounded-lg p-6 shadow-lg" encType="multipart/form-data">
+            <h1 className="text-2xl font-bold text-center mb-8">{title}</h1>
             {actionData?.error && (
                 <div className="p-4 mb-6 bg-theme-error/20 text-theme-error rounded-md">
                     {actionData.error}
