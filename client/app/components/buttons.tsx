@@ -27,9 +27,9 @@ export function SidebarButton({ path, label, icon, isActive, isOpen }: SidebarBu
     );
 }
 
-export function SubmitButton({ label, className }: { label: string; className?: string }) {
+export function SubmitButton({ label, className, disabled }: { label: string; className?: string; disabled?: boolean }) {
     return (
-        <button className={`px-4 py-2 min-w-32 text-white rounded-3xl ${className}`} type="submit">
+        <button className={`px-4 py-2 min-w-32 text-white rounded-3xl ${className}`} type="submit" disabled={disabled}>
             {label}
         </button>
     );
