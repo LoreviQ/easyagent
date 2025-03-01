@@ -149,15 +149,19 @@ export function ModelConfigForm({
 
 
 interface AgentFormProps {
+    initialValues?: any;
     modelConfigs: UserModelConfig[];
     modelProviders: ModelProvider[];
+    readOnly?: boolean;
 }
 
-export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
+export function AgentForm({ initialValues, modelConfigs, modelProviders, readOnly = false }: AgentFormProps) {
     const actionData = useActionData<AgentActionData>();
-    const [isPublic, setIsPublic] = useState(false);
-    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-    const [selectedModelConfig, setSelectedModelConfig] = useState<string | null>(null);
+    const [isPublic, setIsPublic] = useState(initialValues?.is_public || false);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(initialValues?.avatar_url || null);
+    const [selectedModelConfig, setSelectedModelConfig] = useState<string | null>(
+        initialValues?.user_model_config_id || null
+    );
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -177,14 +181,15 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
             )}
 
             {/* Hidden action field for the combined endpoint */}
-            <input type="hidden" name="action" value="insert" />
+            <input type="hidden" name="action" value={initialValues?.id ? "update" : "insert"} />
+            {initialValues?.id && <input type="hidden" name="id" value={initialValues.id} />}
 
             <div className="flex flex-col md:flex-row gap-6 mb-6">
                 {/* Avatar upload section */}
                 <div className="w-full md:w-1/3">
                     <div
-                        className="aspect-square bg-theme-surface border-2 border-dashed border-theme-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-theme-surface-secondary transition-colors"
-                        onClick={() => document.getElementById('avatar-upload')?.click()}
+                        className={`aspect-square bg-theme-surface border-2 ${!readOnly ? 'border-dashed cursor-pointer hover:bg-theme-surface-secondary' : ''} border-theme-border rounded-lg flex flex-col items-center justify-center transition-colors`}
+                        onClick={() => !readOnly && document.getElementById('avatar-upload')?.click()}
                     >
                         {avatarUrl ? (
                             <img
@@ -197,17 +202,21 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-theme-border mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <p className="text-sm text-theme-text-secondary">Click to upload avatar</p>
+                                <p className="text-sm text-theme-text-secondary">
+                                    {readOnly ? "No avatar" : "Click to upload avatar"}
+                                </p>
                             </>
                         )}
-                        <input
-                            type="file"
-                            id="avatar-upload"
-                            name="avatar"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={handleImageUpload}
-                        />
+                        {!readOnly && (
+                            <input
+                                type="file"
+                                id="avatar-upload"
+                                name="avatar"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageUpload}
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -215,14 +224,17 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
                 <div className="w-full md:w-2/3">
                     <div className="mb-4">
                         <label htmlFor="name" className="block text-sm font-medium mb-1">
-                            Name <span className="text-theme-error">*</span>
+                            Name {!readOnly && <span className="text-theme-error">*</span>}
                         </label>
                         <input
                             type="text"
                             id="name"
                             name="name"
                             className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                            required
+                            required={!readOnly}
+                            defaultValue={initialValues?.name || ""}
+                            readOnly={readOnly}
+                            disabled={readOnly}
                         />
                         {actionData?.fieldErrors?.name && (
                             <p className="mt-1 text-sm text-theme-error">{actionData.fieldErrors.name}</p>
@@ -236,11 +248,12 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
                             name="is_public"
                             value="true"
                             checked={isPublic}
-                            onChange={() => setIsPublic(!isPublic)}
+                            onChange={() => !readOnly && setIsPublic(!isPublic)}
+                            disabled={readOnly}
                             className="h-4 w-4 text-theme-primary focus:ring-theme-primary border-theme-border rounded"
                         />
                         <label htmlFor="is_public" className="ml-2 block text-sm">
-                            Make this agent public
+                            {isPublic ? "Public agent" : "Private agent"}
                         </label>
                     </div>
                 </div>
@@ -257,7 +270,10 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
                         name="system_prompt"
                         rows={4}
                         className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                        placeholder="Instructions for how the agent should behave"
+                        placeholder={readOnly ? "No system prompt" : "Instructions for how the agent should behave"}
+                        defaultValue={initialValues?.system_prompt || ""}
+                        readOnly={readOnly}
+                        disabled={readOnly}
                     />
                 </div>
 
@@ -270,7 +286,10 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
                         name="bio"
                         rows={2}
                         className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                        placeholder="A short description of the agent"
+                        placeholder={readOnly ? "No bio" : "A short description of the agent"}
+                        defaultValue={initialValues?.bio || ""}
+                        readOnly={readOnly}
+                        disabled={readOnly}
                     />
                 </div>
 
@@ -283,19 +302,49 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
                         name="lore"
                         rows={4}
                         className="w-full px-3 py-2 bg-theme-surface border border-theme-border rounded-md focus:outline-none focus:ring-2 focus:ring-theme-primary"
-                        placeholder="Background information and context for the agent"
+                        placeholder={readOnly ? "No lore" : "Background information and context for the agent"}
+                        defaultValue={initialValues?.lore || ""}
+                        readOnly={readOnly}
+                        disabled={readOnly}
                     />
                 </div>
             </div>
 
             {/* Model Configurations */}
             <div className="mb-6">
-                <ModelConfigurations
-                    modelConfigs={modelConfigs}
-                    modelProviders={modelProviders}
-                    selectedModelConfig={selectedModelConfig}
-                    setSelectedModelConfig={setSelectedModelConfig}
-                />
+                {readOnly && initialValues?.user_model_config_id ? (
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            {(() => {
+                                const config = modelConfigs.find(c => c.id === initialValues.user_model_config_id);
+                                if (!config) return <p className="text-gray-400">No model configuration selected</p>;
+
+                                return (
+                                    <div className="flex items-center justify-between py-3 px-4 bg-theme-surface-secondary rounded-lg">
+                                        <div className="flex items-center justify-between w-full">
+                                            <h1 className="text-lg font-medium">
+                                                Model Configuration:
+                                            </h1>
+                                            <div>
+                                                <h3 className="font-medium text-lg">{config.name || 'Unnamed Configuration'}</h3>
+                                                <p className="text-sm text-gray-300">
+                                                    {modelProviders.find(p => p.id === config.model_provider_id)?.name || 'No model specified'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </div>
+                    </div>
+                ) : (
+                    <ModelConfigurations
+                        modelConfigs={modelConfigs}
+                        modelProviders={modelProviders}
+                        selectedModelConfig={selectedModelConfig}
+                        setSelectedModelConfig={setSelectedModelConfig}
+                    />
+                )}
 
                 {/* Hidden input to store the selected model config ID */}
                 <input
@@ -306,15 +355,17 @@ export function AgentForm({ modelConfigs, modelProviders }: AgentFormProps) {
             </div>
 
             {/* Form actions */}
-            <div className="flex justify-end space-x-3 pt-4 border-t border-theme-border">
-                <Link
-                    to=".."
-                    className="px-4 py-2 border border-theme-border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-primary"
-                >
-                    Cancel
-                </Link>
-                <SubmitButton label="Create Agent" />
-            </div>
+            {!readOnly && (
+                <div className="flex justify-end space-x-3 pt-4 border-t border-theme-border">
+                    <Link
+                        to=".."
+                        className="px-4 py-2 border border-theme-border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-primary"
+                    >
+                        Cancel
+                    </Link>
+                    <SubmitButton label={initialValues?.id ? "Update Agent" : "Create Agent"} />
+                </div>
+            )}
         </Form>
     );
 } 
