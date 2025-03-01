@@ -1,7 +1,11 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import { type LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
+import type { User } from "@supabase/supabase-js";
+
+import type { UserModelConfig, ModelProvider } from "~/types/database";
+import type { Agent } from "~/types/database";
 import { getSupabaseAuth } from "~/utils/supabase";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -30,7 +34,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Agents() {
-    const data = useLoaderData<typeof loader>();
+    const { agents } = useLoaderData<{ agents: Agent[] }>();
+    const parentContext = useOutletContext<{
+        userData: User;
+        modelConfigs: UserModelConfig[];
+        modelProviders: ModelProvider[];
+    }>();
 
-    return <Outlet context={data} />;
+    return <Outlet context={{ ...parentContext, agents }} />;
 }

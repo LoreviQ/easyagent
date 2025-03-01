@@ -48,7 +48,10 @@ function AgentCard({ agent }: { agent: Agent }) {
         : 'Unknown date';
 
     return (
-        <div className="bg-theme-bg-card-2 rounded-lg overflow-hidden shadow-md relative">
+        <Link
+            to={`/agents/${agent.id}`}
+            className="block bg-theme-bg-card-2 rounded-lg overflow-hidden shadow-md relative hover:shadow-lg transition-shadow"
+        >
             {/* Public/Private indicator */}
             <div className="absolute top-2 right-2 z-10">
                 <span className={`px-2 py-1 text-xs rounded-full ${agent.is_public
@@ -81,6 +84,6 @@ function AgentCard({ agent }: { agent: Agent }) {
                 <h3 className="font-medium text-lg truncate">{agent.name}</h3>
                 <p className="text-sm text-gray-400 mt-1">Last updated: {formattedDate}</p>
             </div>
-        </div>
+        </Link>
     );
 } 
