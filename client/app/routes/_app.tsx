@@ -13,8 +13,6 @@ import { PreferencesProvider, usePreferences } from "~/contexts/preferences";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 export async function loader({ request }: { request: Request }) {
-    console.log("_app loader called with URL:", request.url);
-
     const { supabase } = getSupabaseAuth(request);
     const {
         data: { session },
@@ -58,11 +56,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
     nextUrl,
     defaultShouldRevalidate
 }) => {
-    console.log("shouldRevalidate called", {
-        currentUrl: currentUrl.pathname,
-        nextUrl: nextUrl.pathname
-    });
-
     // Only apply this logic to routes under _app (which appear as /agents, /settings, etc.)
     // Check if we're navigating between two routes that are both under _app
     const appRoutePatterns = ['/agents', '/settings', '/dashboard'];

@@ -39,13 +39,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
     nextUrl,
     defaultShouldRevalidate
 }) => {
-    console.log("agents shouldRevalidate called", {
-        currentUrl: currentUrl.pathname,
-        nextUrl: nextUrl.pathname
-    });
-
     // Don't revalidate when navigating between agent child routes
-    // For example, from /agents/123 to /agents/new
     if (currentUrl.pathname.startsWith('/agents/') &&
         nextUrl.pathname.startsWith('/agents/')) {
         return false;

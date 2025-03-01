@@ -74,7 +74,7 @@ export default function Settings() {
 
 // Displays the connected accounts and allows the user to connect or disconnect from them
 function Accounts() {
-    const userData = useOutletContext<User>();
+    const { userData } = useOutletContext<{ userData: User }>();
     const connectedProviders = PROVIDERS.filter((provider) =>
         userData.identities?.some((identity) => identity.provider === provider.id)
     );
