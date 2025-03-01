@@ -19,7 +19,7 @@ export default function AgentsIndex() {
                 {agents.length > 0 ? (
                     <>
                         <HeadingBreak label="Your AI Agents" />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+                        <div className="flex flex-wrap gap-4 mt-4">
                             {agents.map((agent) => (
                                 <AgentCard key={agent.id} agent={agent} />
                             ))}
@@ -50,7 +50,7 @@ function AgentCard({ agent }: { agent: Agent }) {
     return (
         <Link
             to={`/agents/${agent.id}`}
-            className="block bg-theme-bg-card-2 rounded-lg overflow-hidden shadow-md relative hover:shadow-lg transition-shadow"
+            className="w-[280px] bg-theme-bg-card-2 rounded-lg overflow-hidden shadow-md relative hover:shadow-lg transition-shadow"
         >
             {/* Public/Private indicator */}
             <div className="absolute top-2 right-2 z-10">
