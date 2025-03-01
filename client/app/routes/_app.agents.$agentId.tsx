@@ -1,7 +1,7 @@
 import { useOutletContext, useParams } from "@remix-run/react";
 
 import type { Agent, UserModelConfig, ModelProvider } from "~/types/database";
-import { AgentForm } from "~/components/forms";
+import { AgentForm } from "~/components/agentForm";
 
 export default function AgentDetail() {
     const { agents, modelConfigs, modelProviders } = useOutletContext<{ agents: Agent[], modelConfigs: UserModelConfig[], modelProviders: ModelProvider[] }>();

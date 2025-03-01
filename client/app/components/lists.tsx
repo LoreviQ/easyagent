@@ -3,7 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import { useConfirmationOverlay } from "~/components/overlays";
 import { HeadingBreak } from "~/components/cards";
 import { ActionButton } from "~/components/buttons";
-import { ModelConfigForm, FormActionResponse } from "~/components/forms";
+import { ModelConfigForm, FormActionResponse } from "~/components/modalForm";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 // Displays the user's model configurations

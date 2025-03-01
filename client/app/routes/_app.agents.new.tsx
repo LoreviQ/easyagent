@@ -1,7 +1,7 @@
 import { useOutletContext } from "@remix-run/react";
 
 import type { UserModelConfig, ModelProvider } from "~/types/database";
-import { AgentForm } from "~/components/forms";
+import { AgentForm } from "~/components/agentForm";
 
 
 export default function NewAgent() {
