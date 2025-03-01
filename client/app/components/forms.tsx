@@ -33,7 +33,7 @@ export function ModelConfigForm({
     // Determine the action route based on whether we're editing or creating
     const actionRoute = isEdit
         ? "/api/update-model-config"
-        : "/api/create-model-config";
+        : "/api/insert-model-config";
 
     const [apiKeyChanged, setApiKeyChanged] = useState(false);
 
