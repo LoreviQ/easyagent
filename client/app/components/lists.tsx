@@ -39,8 +39,11 @@ export function ModelConfigurations({
         if (!deleteConfirmation.confirmationData) return;
 
         deleteFetcher.submit(
-            { id: deleteConfirmation.confirmationData },
-            { method: "post", action: "/api/delete-model-config" }
+            {
+                action: "delete",
+                id: deleteConfirmation.confirmationData
+            },
+            { method: "post", action: "/api/model-config" }
         );
     };
 

@@ -29,12 +29,6 @@ export function ModelConfigForm({
     const formFetcher = useFetcher<FormActionResponse>();
     const isSubmitting = formFetcher.state === "submitting";
     const isEdit = !!initialValues?.id;
-
-    // Determine the action route based on whether we're editing or creating
-    const actionRoute = isEdit
-        ? "/api/update-model-config"
-        : "/api/insert-model-config";
-
     const [apiKeyChanged, setApiKeyChanged] = useState(false);
 
     // Handle form submission response
@@ -53,7 +47,14 @@ export function ModelConfigForm({
             <h3 className="font-medium text-lg mb-4">
                 {isEdit ? "Edit Configuration" : "Create New Configuration"}
             </h3>
-            <formFetcher.Form method="post" action={actionRoute}>
+            <formFetcher.Form method="post" action={"/api/model-config"}>
+                {/* Add action field for the combined endpoint */}
+                <input
+                    type="hidden"
+                    name="action"
+                    value={isEdit ? "update" : "insert"}
+                />
+
                 {/* Hidden ID field for edits */}
                 {isEdit && <input type="hidden" name="id" value={initialValues.id} />}
 
