@@ -29,14 +29,13 @@ export function useConfirmationOverlay({
     const [showOverlay, setShowOverlay] = useState(false);
     const [data, setData] = useState<string | null>(null);
 
-    const showConfirmation = (configId?: string) => {
-        if (configId) setData(configId);
+    const showConfirmation = (data?: string) => {
+        if (data) setData(data);
         setShowOverlay(true);
     };
 
     const hideConfirmation = () => {
         setShowOverlay(false);
-        // Optional: clear data after a short delay to allow for animation
         setTimeout(() => setData(null), 300);
     };
 

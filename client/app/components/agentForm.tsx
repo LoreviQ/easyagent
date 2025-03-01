@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { AgentActionData } from "~/routes/api.agent";
 import { NavButton, SubmitButton, ActionButton } from "~/components/buttons";
 import { ModelConfigurations } from "~/components/lists";
-import { useConfirmationOverlay } from "~/components/overlays";
+import { useConfirmationOverlay } from "~/hooks/useConfirmationOverlay";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 import type { FormActionResponse } from "~/types/api";
 

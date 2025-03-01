@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFetcher } from "@remix-run/react";
-import { useConfirmationOverlay } from "~/components/overlays";
+import { useConfirmationOverlay } from "~/hooks/useConfirmationOverlay";
 import { HeadingBreak } from "~/components/cards";
 import { ActionButton } from "~/components/buttons";
 import { ModelConfigForm } from "~/components/modalForm";
