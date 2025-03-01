@@ -14,7 +14,7 @@ export default function AgentDetail() {
                 initialValues={agent}
                 modelConfigs={modelConfigs}
                 modelProviders={modelProviders}
-                readOnly={true}
+                initialReadOnly={true}
                 title={"Agent Details"}
             />
         </div>

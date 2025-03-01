@@ -2,9 +2,11 @@ import { useFetcher, useActionData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 import { Form } from "@remix-run/react";
-import { NavButton, SubmitButton } from "~/components/buttons";
+
+import { NavButton, SubmitButton, ActionButton } from "~/components/buttons";
 import { ModelConfigurations } from "~/components/lists";
 import { AgentActionData } from "~/routes/api.agent";
+import { useConfirmationOverlay } from "~/components/overlays";
 
 // Define the response type for the form submission
 export interface FormActionResponse {
@@ -152,17 +154,19 @@ interface AgentFormProps {
     modelConfigs: UserModelConfig[];
     modelProviders: ModelProvider[];
     initialValues?: any;
-    readOnly?: boolean;
+    initialReadOnly?: boolean;
     title?: string;
 }
 
-export function AgentForm({ modelConfigs, modelProviders, initialValues, readOnly = false, title = "Create New Agent" }: AgentFormProps) {
+export function AgentForm({ modelConfigs, modelProviders, initialValues, initialReadOnly = false, title = "Create New Agent" }: AgentFormProps) {
     const actionData = useActionData<AgentActionData>();
     const [isPublic, setIsPublic] = useState(initialValues?.is_public || false);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(initialValues?.avatar_url || null);
     const [selectedModelConfig, setSelectedModelConfig] = useState<string | null>(
         initialValues?.user_model_config_id || null
     );
+    const [readOnly, setReadOnly] = useState(initialReadOnly);
+    const isEdit = !!initialValues?.id;
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -173,9 +177,48 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, readOnl
         }
     };
 
+    const deleteFetcher = useFetcher<FormActionResponse>();
+
+    const executeDelete = () => {
+        if (!deleteConfirmation.confirmationData) return;
+
+        deleteFetcher.submit(
+            {
+                action: "delete",
+                id: deleteConfirmation.confirmationData
+            },
+            { method: "post", action: "/api/agent" }
+        );
+    };
+
+    const deleteConfirmation = useConfirmationOverlay({
+        heading: "Confirm Delete",
+        subheading: "Are you sure you want to delete this agent? This action cannot be undone.",
+        continueButtonLabel: "Delete",
+        onContinue: executeDelete,
+        isLoading: deleteFetcher.state === "submitting",
+        continueButtonClassName: "bg-theme-error hover:bg-theme-error-hover"
+    });
+
+    // Clear confirmation when delete is complete
+    useEffect(() => {
+        if (deleteFetcher.data?.success) {
+            deleteConfirmation.hideConfirmation();
+        } else if (deleteFetcher.data?.error) {
+            alert(`Error: ${deleteFetcher.data.error}`);
+            deleteConfirmation.hideConfirmation();
+        }
+    }, [deleteFetcher.data]);
+
     return (
         <Form method="post" action="/api/agent" className="bg-theme-bg-card/70 rounded-lg p-6 shadow-lg" encType="multipart/form-data">
-            <h1 className="text-2xl font-bold text-center mb-8">{title}</h1>
+            <div className="flex items-center justify-between mb-8">
+                {!readOnly && !isEdit && <NavButton label="Cancel" path=".." className="bg-theme-accent hover:bg-theme-accent-hover" />}
+                {!readOnly && isEdit && <ActionButton label="Cancel" className="bg-theme-accent hover:bg-theme-accent-hover" onClick={() => setReadOnly(true)} />}
+                <h1 className="text-2xl font-bold text-center flex-1">{title}</h1>
+                {!readOnly && <SubmitButton label={isEdit ? "Update Agent" : "Create Agent"} className="bg-theme-primary hover:bg-theme-primary-hover" />}
+                {readOnly && <ActionButton label="Edit" className="bg-theme-error hover:bg-theme-error-hover" onClick={() => setReadOnly(false)} />}
+            </div>
             {actionData?.error && (
                 <div className="p-4 mb-6 bg-theme-error/20 text-theme-error rounded-md">
                     {actionData.error}
@@ -183,8 +226,8 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, readOnl
             )}
 
             {/* Hidden action field for the combined endpoint */}
-            <input type="hidden" name="action" value={initialValues?.id ? "update" : "insert"} />
-            {initialValues?.id && <input type="hidden" name="id" value={initialValues.id} />}
+            <input type="hidden" name="action" value={isEdit ? "update" : "insert"} />
+            {isEdit && <input type="hidden" name="id" value={initialValues.id} />}
 
             <div className="flex flex-col md:flex-row gap-6 mb-6">
                 {/* Avatar upload section */}
@@ -364,8 +407,13 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, readOnl
             {/* Form actions */}
             {!readOnly && (
                 <div className="flex justify-between w-full pt-4 border-t border-theme-border">
-                    <NavButton label="Cancel" path=".." className="bg-theme-accent hover:bg-theme-accent-hover" />
-                    <SubmitButton label={initialValues?.id ? "Update Agent" : "Create Agent"} className="bg-theme-primary hover:bg-theme-primary-hover" />
+                    {!isEdit && <NavButton label="Cancel" path=".." className="bg-theme-accent hover:bg-theme-accent-hover" />}
+                    {isEdit && <ActionButton
+                        label="Delete"
+                        className="px-3 py-1 text-sm bg-theme-error hover:bg-theme-error-hover"
+                        onClick={() => deleteConfirmation.showConfirmation(initialValues.id)}
+                    />}
+                    <SubmitButton label={isEdit ? "Update Agent" : "Create Agent"} className="bg-theme-primary hover:bg-theme-primary-hover" />
                 </div>
             )}
         </Form>
