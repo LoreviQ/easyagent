@@ -16,6 +16,8 @@ export async function action({ request }: { request: Request }) {
     const provider = formData.get("provider");
     const connected = formData.get("connected") === "1";
     const { supabase, headers } = getSupabaseAuth(request);
+    const url = new URL(request.url);
+    const redirectUrl = `${url.origin}/api/auth-callback?next=/settings`;
     try {
         if (connected) {
             // Disconnect identity
@@ -31,7 +33,7 @@ export async function action({ request }: { request: Request }) {
             const { data, error } = await supabase.auth.linkIdentity({
                 provider: provider as Provider,
                 options: {
-                    redirectTo: `${process.env.APP_URL}/api/auth-callback?next=/settings`,
+                    redirectTo: redirectUrl,
                 },
             });
             if (error) throw error;
