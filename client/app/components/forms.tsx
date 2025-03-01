@@ -2,7 +2,7 @@ import { useFetcher, useActionData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 import { Form, Link } from "@remix-run/react";
-import { SubmitButton } from "~/components/buttons";
+import { NavButton, SubmitButton } from "~/components/buttons";
 import { ModelConfigurations } from "~/components/lists";
 import { AgentActionData } from "~/routes/api.agent";
 
@@ -256,8 +256,8 @@ export function AgentForm({ initialValues, modelConfigs, modelProviders, readOnl
                             <div className={`relative w-11 h-6 bg-gray-600 rounded-full transition-colors ${isPublic ? 'bg-theme-primary' : ''} ${readOnly ? 'opacity-60' : ''}`}>
                                 <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${isPublic ? 'transform translate-x-5' : ''}`}></div>
                             </div>
-                            <span className="ml-2 text-sm">
-                                {isPublic ? "Public agent" : "Private agent"}
+                            <span className="ml-2 text-md">
+                                {isPublic ? "Public" : "Private"}
                             </span>
                         </label>
                     </div>
@@ -361,14 +361,9 @@ export function AgentForm({ initialValues, modelConfigs, modelProviders, readOnl
 
             {/* Form actions */}
             {!readOnly && (
-                <div className="flex justify-end space-x-3 pt-4 border-t border-theme-border">
-                    <Link
-                        to=".."
-                        className="px-4 py-2 border border-theme-border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-primary"
-                    >
-                        Cancel
-                    </Link>
-                    <SubmitButton label={initialValues?.id ? "Update Agent" : "Create Agent"} />
+                <div className="flex justify-between w-full pt-4 border-t border-theme-border">
+                    <NavButton label="Cancel" path=".." className="bg-theme-accent hover:bg-theme-accent-hover" />
+                    <SubmitButton label={initialValues?.id ? "Update Agent" : "Create Agent"} className="bg-theme-primary hover:bg-theme-primary-hover" />
                 </div>
             )}
         </Form>

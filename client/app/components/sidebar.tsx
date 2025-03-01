@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "@remix-run/react";
 
 import { BlockIcon, BuildingIcon, CogIcon } from "./icons";
-import { NavButton } from "./buttons";
+import { SidebarButton } from "./buttons";
 import { usePreferences } from "~/contexts/preferences";
 
 export function Sidebar() {
@@ -70,7 +70,7 @@ function sidebarContent(isOpen: boolean) {
             <nav className="space-y-2">
                 {navLinks.map((link) => {
                     return (
-                        <NavButton
+                        <SidebarButton
                             key={link.path}
                             path={link.path}
                             label={link.name}

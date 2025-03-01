@@ -1,14 +1,14 @@
 import { Link } from "@remix-run/react";
 import { usePreferences } from "~/contexts/preferences";
 
-interface NavButtonProps {
+interface SidebarButtonProps {
     path: string;
     label: string;
     icon: React.ReactNode;
     isActive: boolean;
     isOpen?: boolean;
 }
-export function NavButton({ path, label, icon, isActive, isOpen }: NavButtonProps) {
+export function SidebarButton({ path, label, icon, isActive, isOpen }: SidebarButtonProps) {
     const { updatePreference } = usePreferences();
     return (
         <Link
@@ -32,6 +32,14 @@ export function SubmitButton({ label, className }: { label: string; className?: 
         <button className={`px-4 py-2 min-w-32 text-white rounded-3xl ${className}`} type="submit">
             {label}
         </button>
+    );
+}
+
+export function NavButton({ label, className, path }: { label: string; className?: string; path: string }) {
+    return (
+        <Link to={path} className={`px-4 py-2 text-white rounded-3xl ${className}`} type="submit">
+            {label}
+        </Link>
     );
 }
 
