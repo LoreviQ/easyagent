@@ -241,8 +241,6 @@ async function handleUpdate(formData: FormData, supabase: any, userId: string) {
             error: "Failed to update agent. Please try again."
         } as AgentActionData, { status: 500 });
     }
-
-    // Return success response to trigger revalidation without redirecting
     return Response.json({ success: true, data });
 }
 

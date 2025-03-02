@@ -13,6 +13,7 @@ import { PreferencesProvider, usePreferences } from "~/contexts/preferences";
 import type { UserModelConfig, ModelProvider } from "~/types/database";
 
 export async function loader({ request }: { request: Request }) {
+    console.log("loader");
     const { supabase } = getSupabaseAuth(request);
     const {
         data: { session },

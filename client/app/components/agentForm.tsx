@@ -1,4 +1,4 @@
-import { useFetcher, useActionData, useRevalidator } from "@remix-run/react";
+import { useFetcher, useActionData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 
 import { AgentActionData } from "~/routes/api.agent";
@@ -27,7 +27,6 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
     const isEdit = !!initialValues?.id;
     const formFetcher = useFetcher<FormActionResponse>();
     const [formAction, setFormAction] = useState<string>(isEdit ? "update" : "insert");
-    const revalidator = useRevalidator();
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -43,7 +42,6 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
         if (formFetcher.data && formFetcher.state === "idle") {
             if (formFetcher.data.success) {
                 setReadOnly(true);
-                revalidator.revalidate();
             } else if (formFetcher.data.error) {
                 alert(`Error: ${formFetcher.data.error}`);
             }
@@ -53,18 +51,18 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
     const deleteFetcher = useFetcher<FormActionResponse>();
 
     const executeDelete = () => {
-        // Sets the form action to delete and submits the form
         if (!deleteConfirmation.confirmationData) return;
-        setFormAction("delete");
-        const formElement = document.getElementById("agent-form") as HTMLFormElement;
-        if (formElement) {
-            // Find the action input and explicitly set its value
-            const actionInput = formElement.querySelector('input[name="action"]') as HTMLInputElement;
-            if (actionInput) {
-                actionInput.value = "delete";
+        // Use the formFetcher instead of manually submitting the form
+        formFetcher.submit(
+            {
+                action: "delete",
+                id: initialValues.id
+            },
+            {
+                method: "post",
+                action: "/api/agent"
             }
-            formElement.submit();
-        }
+        );
     };
 
     const deleteConfirmation = useConfirmationOverlay({
