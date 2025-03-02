@@ -26,9 +26,6 @@ export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const actionType = formData.get("action") as string;
 
-    console.log("actionType", actionType);
-    console.log("formData", formData);
-
     try {
         // Handle different actions
         switch (actionType) {
