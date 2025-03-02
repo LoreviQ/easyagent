@@ -69,6 +69,7 @@ export default function App() {
 export const shouldRevalidate: ShouldRevalidateFunction = ({
     defaultShouldRevalidate,
 }) => {
+    console.log("defaultDecision", defaultShouldRevalidate);
     return defaultShouldRevalidate;
 };
 

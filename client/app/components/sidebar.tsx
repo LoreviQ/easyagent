@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "@remix-run/react";
 
-import { BlockIcon, BuildingIcon, CogIcon } from "./icons";
+import { BlockIcon, BuildingIcon, CogIcon, AgentIcon } from "./icons";
 import { SidebarButton } from "./buttons";
 import { usePreferences } from "~/contexts/preferences";
 
@@ -55,9 +55,14 @@ function sidebarContent(isOpen: boolean) {
             icon: <BlockIcon className="w-6 h-6" />,
         },
         {
+            name: "Deployments",
+            path: "/deployments",
+            icon: <BuildingIcon className="w-6 h-6" />,
+        },
+        {
             name: "My Agents",
             path: "/agents",
-            icon: <BuildingIcon className="w-6 h-6" />,
+            icon: <AgentIcon className="w-6 h-6" />,
         },
         {
             name: "Settings",
