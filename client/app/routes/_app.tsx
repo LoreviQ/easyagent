@@ -65,31 +65,13 @@ export default function App() {
         </PreferencesProvider>
     );
 }
-/*
+
 export const shouldRevalidate: ShouldRevalidateFunction = ({
-    formMethod,
-    currentUrl,
-    nextUrl,
-    defaultShouldRevalidate
+    defaultShouldRevalidate,
 }) => {
-    // Only apply this logic to routes under _app (which appear as /agents, /settings, etc.)
-    // Check if we're navigating between two routes that are both under _app
-    const appRoutePatterns = ['/agents', '/settings', '/dashboard'];
-
-    const isCurrentAppRoute = appRoutePatterns.some(pattern =>
-        currentUrl.pathname === pattern || currentUrl.pathname.startsWith(`${pattern}/`));
-
-    const isNextAppRoute = appRoutePatterns.some(pattern =>
-        nextUrl.pathname === pattern || nextUrl.pathname.startsWith(`${pattern}/`));
-
-    if (isCurrentAppRoute && isNextAppRoute) {
-        // Don't revalidate when navigating between _app child routes
-        return false;
-    }
-
     return defaultShouldRevalidate;
-}
-*/
+};
+
 interface LayoutProps {
     userData: User;
     modelConfigs: UserModelConfig[];

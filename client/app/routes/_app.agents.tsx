@@ -33,28 +33,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     };
 }
 
-/*
 export const shouldRevalidate: ShouldRevalidateFunction = ({
-    formMethod,
-    currentUrl,
-    nextUrl,
-    defaultShouldRevalidate
+    defaultShouldRevalidate,
 }) => {
-    // Don't revalidate when navigating between agent child routes
-    if (currentUrl.pathname.startsWith('/agents/') &&
-        nextUrl.pathname.startsWith('/agents/')) {
-        return false;
-    }
-
-    // Also don't revalidate when navigating from /agents to any /agents/* route
-    if ((currentUrl.pathname === '/agents' && nextUrl.pathname.startsWith('/agents/')) ||
-        (nextUrl.pathname === '/agents' && currentUrl.pathname.startsWith('/agents/'))) {
-        return false;
-    }
-
     return defaultShouldRevalidate;
 };
-*/
+
 export default function Agents() {
     const { agents } = useLoaderData<{ agents: Agent[] }>();
     const parentContext = useOutletContext<{
