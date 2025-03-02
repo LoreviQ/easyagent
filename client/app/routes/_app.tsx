@@ -50,6 +50,22 @@ export async function loader({ request }: { request: Request }) {
     return { user, preferences, modelConfigs, modelProviders }
 }
 
+
+
+export default function App() {
+    const loaderData = useLoaderData<typeof loader>();
+    const userData = loaderData.user;
+    const preferences = loaderData.preferences as PrefsCookie;
+    const modelConfigs = loaderData.modelConfigs as UserModelConfig[];
+    const modelProviders = loaderData.modelProviders as ModelProvider[];
+
+    return (
+        <PreferencesProvider initial={preferences}>
+            <Layout userData={userData} modelConfigs={modelConfigs} modelProviders={modelProviders} />
+        </PreferencesProvider>
+    );
+}
+/*
 export const shouldRevalidate: ShouldRevalidateFunction = ({
     formMethod,
     currentUrl,
@@ -73,21 +89,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
     return defaultShouldRevalidate;
 }
-
-export default function App() {
-    const loaderData = useLoaderData<typeof loader>();
-    const userData = loaderData.user;
-    const preferences = loaderData.preferences as PrefsCookie;
-    const modelConfigs = loaderData.modelConfigs as UserModelConfig[];
-    const modelProviders = loaderData.modelProviders as ModelProvider[];
-
-    return (
-        <PreferencesProvider initial={preferences}>
-            <Layout userData={userData} modelConfigs={modelConfigs} modelProviders={modelProviders} />
-        </PreferencesProvider>
-    );
-}
-
+*/
 interface LayoutProps {
     userData: User;
     modelConfigs: UserModelConfig[];

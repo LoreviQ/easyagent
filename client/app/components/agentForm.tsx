@@ -26,6 +26,7 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
     const [readOnly, setReadOnly] = useState(initialReadOnly);
     const isEdit = !!initialValues?.id;
     const formFetcher = useFetcher<FormActionResponse>();
+    const [formAction, setFormAction] = useState<string>(isEdit ? "update" : "insert");
     const revalidator = useRevalidator();
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,15 +53,18 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
     const deleteFetcher = useFetcher<FormActionResponse>();
 
     const executeDelete = () => {
+        // Sets the form action to delete and submits the form
         if (!deleteConfirmation.confirmationData) return;
-
-        deleteFetcher.submit(
-            {
-                action: "delete",
-                id: deleteConfirmation.confirmationData
-            },
-            { method: "post", action: "/api/agent" }
-        );
+        setFormAction("delete");
+        const formElement = document.getElementById("agent-form") as HTMLFormElement;
+        if (formElement) {
+            // Find the action input and explicitly set its value
+            const actionInput = formElement.querySelector('input[name="action"]') as HTMLInputElement;
+            if (actionInput) {
+                actionInput.value = "delete";
+            }
+            formElement.submit();
+        }
     };
 
     const deleteConfirmation = useConfirmationOverlay({
@@ -84,7 +88,12 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
 
     return (
         <>
-            <formFetcher.Form method="post" action="/api/agent" className="bg-theme-bg-card/70 rounded-lg p-6 shadow-lg" encType="multipart/form-data">
+            <formFetcher.Form
+                method="post"
+                action="/api/agent"
+                className="bg-theme-bg-card/70 rounded-lg p-6 shadow-lg"
+                encType="multipart/form-data"
+            >
                 <div className="flex items-center justify-between mb-8">
                     {!readOnly && !isEdit && <NavButton label="Cancel" path=".." className="bg-theme-accent hover:bg-theme-accent-hover" />}
                     {!readOnly && isEdit && <ActionButton label="Cancel" className="bg-theme-accent hover:bg-theme-accent-hover" onClick={() => setReadOnly(true)} />}
@@ -99,7 +108,7 @@ export function AgentForm({ modelConfigs, modelProviders, initialValues, initial
                 )}
 
                 {/* Hidden action field for the combined endpoint */}
-                <input type="hidden" name="action" value={isEdit ? "update" : "insert"} />
+                <input type="hidden" name="action" value={formAction} />
                 {isEdit && <input type="hidden" name="id" value={initialValues.id} />}
 
                 <div className="flex flex-col md:flex-row gap-6 mb-6">

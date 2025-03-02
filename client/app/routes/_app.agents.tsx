@@ -33,6 +33,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     };
 }
 
+/*
 export const shouldRevalidate: ShouldRevalidateFunction = ({
     formMethod,
     currentUrl,
@@ -53,7 +54,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
     return defaultShouldRevalidate;
 };
-
+*/
 export default function Agents() {
     const { agents } = useLoaderData<{ agents: Agent[] }>();
     const parentContext = useOutletContext<{

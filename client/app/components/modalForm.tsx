@@ -1,4 +1,4 @@
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useRevalidator } from "@remix-run/react";
 import { useState, useEffect } from "react";
 
 import type { UserModelConfig, ModelProvider } from "~/types/database";
@@ -21,12 +21,16 @@ export function ModelConfigForm({
     const isSubmitting = formFetcher.state === "submitting";
     const isEdit = !!initialValues?.id;
     const [apiKeyChanged, setApiKeyChanged] = useState(false);
+    const revalidator = useRevalidator();
 
     // Handle form submission response
     useEffect(() => {
         if (formFetcher.data && formFetcher.state === "idle") {
             if (formFetcher.data.success && onSuccess) {
-                onSuccess();
+                revalidator.revalidate();
+                if (onSuccess) {
+                    onSuccess();
+                }
             } else if (formFetcher.data.error) {
                 alert(`Error: ${formFetcher.data.error}`);
             }
