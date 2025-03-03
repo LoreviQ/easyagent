@@ -14,7 +14,7 @@ import net from "net";
 import path from "path";
 import { fileURLToPath } from "url";
 import { initializeDbCache } from "./cache/index.ts";
-import { character } from "./character.ts";
+import { character as DEFAULTCHAR } from "./character.ts";
 import { startChat } from "./chat/index.ts";
 import { initializeClients } from "./clients/index.ts";
 import {
@@ -132,7 +132,7 @@ const startAgents = async () => {
   const args = parseArguments();
 
   let charactersArg = args.characters || args.character;
-  let characters = [character];
+  let characters = [DEFAULTCHAR];
 
   console.log("charactersArg", charactersArg);
   if (charactersArg) {
@@ -165,7 +165,7 @@ const startAgents = async () => {
   }
 
   const isDaemonProcess = process.env.DAEMON_PROCESS === "true";
-  if(!isDaemonProcess) {
+  if (!isDaemonProcess) {
     elizaLogger.log("Chat started. Type 'exit' to quit.");
     const chat = startChat(characters);
     chat();

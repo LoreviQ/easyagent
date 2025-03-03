@@ -1,4 +1,4 @@
-*.ts
+
 dist
 !index.ts
 !character.ts
@@ -9,3 +9,4 @@ dist/
 db.sqlite
 .idea
 .tee-cloud
+docker-compose.yaml

@@ -9,6 +9,7 @@ services:
         volumes:
             - ./data:/app/data
         environment:
+            - AGENT_ID=85315788-10b0-4c73-9ac1-3ee2cf20b628
             - OPENROUTER_API_KEY=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
             - ELEVENLABS_XI_API_KEY=
             - ELEVENLABS_MODEL_ID=eleven_multilingual_v2
